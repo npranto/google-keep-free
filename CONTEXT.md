@@ -1,4 +1,4 @@
-# Notes
+# Google Keep Free
 
 A personal notes app inspired by Google Keep, where an individual owner captures short notes quickly and organizes them for later retrieval.
 
