@@ -1,6 +1,6 @@
 # 01: Application foundation: scaffold, auth, empty shell
 
-**Status:** ready-for-agent
+**Status:** decomposed - implementation delegated to sub-tickets 01.01-01.05
 **Classification:** FOUNDATION
 **Blocked by:** None (can start immediately)
 
@@ -66,3 +66,28 @@ see empty shell.
 None yet (first ticket, no contention). Sets the shape every later ticket builds on
 — worth getting shell component boundaries right here since they become hot files
 immediately after.
+
+## Sub-tickets (umbrella)
+
+This ticket is now an index. Implement the children in order (strict chain):
+
+1. [ ] 01.01-nextjs-scaffold-tailwind-shadcn.md
+2. [ ] 01.02-env-validation-and-db-connection.md (blocked by 01.01)
+3. [ ] 01.03-clerk-auth-guard-and-owner-id.md (blocked by 01.02)
+4. [ ] 01.04-static-app-shell-and-empty-state.md (blocked by 01.03)
+5. [ ] 01.05-vercel-deploy.md (blocked by 01.04)
+
+## Completion checklist
+
+- [ ] All five children complete
+- [ ] All original acceptance criteria above verified on the deployed preview
+
+## Coverage map
+
+- Signed-out redirect, no local user: 01.03
+- Signed-in shell and empty state: 01.03, 01.04
+- Notes selected, Archive/Trash inert: 01.04
+- `getOwnerId()` behavior: 01.03
+- Scaffold, Tailwind, shadcn: 01.01
+- Drizzle/Neon, env, `.env.example`: 01.02
+- Vercel deploy: 01.05
