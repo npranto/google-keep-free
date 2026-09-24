@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 export default function HomePage() {
   return (
     <main className="flex flex-1 items-center justify-center p-6">
@@ -8,6 +10,7 @@ export default function HomePage() {
         <p className="mt-2 text-sm text-amber-800 dark:text-amber-200">
           Scaffold is up. Notes are coming soon.
         </p>
+        <Button className="mt-4">Get started</Button>
       </div>
     </main>
   );
