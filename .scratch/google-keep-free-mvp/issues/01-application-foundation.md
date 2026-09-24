@@ -71,7 +71,7 @@ immediately after.
 
 This ticket is now an index. Implement the children in order (strict chain):
 
-1. [ ] 01.01-nextjs-scaffold-tailwind-shadcn.md
+1. [x] ✅01.01-nextjs-scaffold-tailwind-shadcn.md
 2. [ ] 01.02-env-validation-and-db-connection.md (blocked by 01.01)
 3. [ ] 01.03-clerk-auth-guard-and-owner-id.md (blocked by 01.02)
 4. [ ] 01.04-static-app-shell-and-empty-state.md (blocked by 01.03)
