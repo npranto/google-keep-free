@@ -15,7 +15,7 @@ export default function SignInPage() {
           </p>
         </div>
 
-        <form className="mt-6 flex flex-col gap-4">
+        <div className="mt-6 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -46,10 +46,10 @@ export default function SignInPage() {
             />
           </div>
 
-          <Button type="submit" className="mt-2 w-full">
+          <Button type="button" className="mt-2 w-full">
             Sign in
           </Button>
-        </form>
+        </div>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           New here?{" "}
