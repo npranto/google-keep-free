@@ -35,7 +35,7 @@ See the [system architecture](docs/architecture/system.md), [ADR 0001](docs/adr/
 
 Prerequisites:
 
-- Node.js 20.9.0 or newer (required by Next.js 16)
+- Node.js 20.9.0 or newer (required by Next.js 16); 20.19.0 or newer to run `npm test` (required by Vitest's Vite)
 - npm (this repo uses `package-lock.json`)
 
 ```bash
@@ -47,21 +47,23 @@ Then open http://localhost:3000.
 
 Available scripts:
 
-| Script          | Purpose                      |
-| --------------- | ---------------------------- |
-| `npm run dev`   | Start the development server |
-| `npm run build` | Create a production build    |
-| `npm run start` | Serve the production build   |
-| `npm run lint`  | Run ESLint                   |
+| Script              | Purpose                      |
+| ------------------- | ---------------------------- |
+| `npm run dev`       | Start the development server |
+| `npm run build`     | Create a production build    |
+| `npm run start`     | Serve the production build   |
+| `npm run lint`      | Run ESLint                   |
+| `npm run typecheck` | Run the TypeScript compiler  |
+| `npm test`          | Run unit tests (Vitest)      |
 
-No environment variables, database, or auth setup are needed yet. Those arrive with later tickets (see the roadmap).
+No environment variables, database, or auth setup are needed to run the app yet. [`lib/env.ts`](lib/env.ts) validates `DATABASE_URL` with Zod and will fail fast once the database client imports it; copy [`.env.example`](.env.example) to `.env.local` and fill it in by then. Database and auth setup arrive with later tickets (see the roadmap).
 
 ## Project structure
 
 ```
 app/          Next.js App Router: root layout, global styles, favicon, and the (app) route group
 components/   Shared components; ui/ holds shadcn/ui primitives (currently Button)
-lib/          Shared utilities (currently the cn class-name helper)
+lib/          Shared utilities (the cn class-name helper and the Zod-validated env module)
 docs/         Product, architecture, design, ADR, and agent docs (source of truth)
 .scratch/     Local MVP spec and ticket files
 ```
