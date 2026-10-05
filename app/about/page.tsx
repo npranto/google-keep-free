@@ -15,8 +15,7 @@ const values = [
   },
   {
     title: "Reliability",
-    description:
-      "The notes you save are the notes you get back, every time.",
+    description: "The notes you save are the notes you get back, every time.",
   },
 ];
 
@@ -44,13 +43,13 @@ export default function AboutPage() {
           <h2 className="text-lg font-semibold tracking-tight">Our story</h2>
           <p className="mt-3 text-sm text-muted-foreground">
             We started this project because every notes app we tried made us
-            trade something away, our data, our attention, or our patience.
-            So we set out to build the one we actually wanted to use.
+            trade something away, our data, our attention, or our patience. So
+            we set out to build the one we actually wanted to use.
           </p>
           <p className="mt-3 text-sm text-muted-foreground">
-            What began as a weekend experiment turned into a small product
-            built around one idea: capturing a thought should be the easiest
-            part of your day, not the hardest.
+            What began as a weekend experiment turned into a small product built
+            around one idea: capturing a thought should be the easiest part of
+            your day, not the hardest.
           </p>
         </section>
 
@@ -82,9 +81,7 @@ export default function AboutPage() {
                 </span>
                 <div>
                   <p className="font-medium">{member.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {member.role}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{member.role}</p>
                 </div>
               </li>
             ))}

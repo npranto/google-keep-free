@@ -56,9 +56,9 @@ describe("parseEnv", () => {
   });
 
   it("fails naming DATABASE_URL when the scheme is not postgres", () => {
-    expect(() =>
-      parseEnv({ DATABASE_URL: "https://example.com/db" }),
-    ).toThrow(/DATABASE_URL/);
+    expect(() => parseEnv({ DATABASE_URL: "https://example.com/db" })).toThrow(
+      /DATABASE_URL/,
+    );
   });
 
   it("does not echo the invalid value in the error", () => {
