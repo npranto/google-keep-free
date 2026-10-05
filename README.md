@@ -47,14 +47,16 @@ Then open http://localhost:3000.
 
 Available scripts:
 
-| Script              | Purpose                      |
-| ------------------- | ---------------------------- |
-| `npm run dev`       | Start the development server |
-| `npm run build`     | Create a production build    |
-| `npm run start`     | Serve the production build   |
-| `npm run lint`      | Run ESLint                   |
-| `npm run typecheck` | Run the TypeScript compiler  |
-| `npm test`          | Run unit tests (Vitest)      |
+| Script                 | Purpose                       |
+| ---------------------- | ----------------------------- |
+| `npm run dev`          | Start the development server  |
+| `npm run build`        | Create a production build     |
+| `npm run start`        | Serve the production build    |
+| `npm run lint`         | Run ESLint                    |
+| `npm run typecheck`    | Run the TypeScript compiler   |
+| `npm run format`       | Format code with Prettier     |
+| `npm run format:check` | Check formatting (used in CI) |
+| `npm test`             | Run unit tests (Vitest)       |
 
 No environment variables, database, or auth setup are needed to run the app yet. [`lib/env.ts`](lib/env.ts) validates `DATABASE_URL` with Zod and will fail fast once the database client imports it; copy [`.env.example`](.env.example) to `.env.local` and fill it in by then. Database and auth setup arrive with later tickets (see the roadmap).
 
