@@ -1,2 +1,3 @@
-// Placeholder. Table definitions and Drizzle Kit config land in a later ticket.
+// Placeholder. Table definitions land in a later ticket. Drizzle Kit reads this
+// file via drizzle.config.ts.
 export {};
