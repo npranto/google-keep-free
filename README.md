@@ -55,7 +55,7 @@ Available scripts:
 | `npm run lint`         | Run ESLint                    |
 | `npm run typecheck`    | Run the TypeScript compiler   |
 | `npm run format`       | Format code with Prettier     |
-| `npm run format:check` | Check formatting (used in CI) |
+| `npm run format:check` | Check formatting              |
 | `npm test`             | Run unit tests (Vitest)       |
 
 No environment variables, database, or auth setup are needed to run the app yet. [`lib/env.ts`](lib/env.ts) validates `DATABASE_URL` with Zod and will fail fast once the database client imports it; copy [`.env.example`](.env.example) to `.env.local` and fill it in by then. Database and auth setup arrive with later tickets (see the roadmap).
