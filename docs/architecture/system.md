@@ -222,8 +222,9 @@ required keys.
 
 Drizzle Kit's `generate` + `migrate` workflow. Schema changes to `lib/db/schema.ts`
 produce a new checked-in SQL migration file (reviewable like any code change);
-migrations are applied explicitly (`drizzle-kit migrate`), never auto-run during the
-Vercel build. `drizzle-kit push` (direct schema diffing, no migration history) may be
+migrations are applied explicitly (`npm run db:generate`, then `npm run db:migrate`,
+both configured in `drizzle.config.ts` and reading `DATABASE_URL` from `.env.local`),
+never auto-run during the Vercel build. `drizzle-kit push` (direct schema diffing, no migration history) may be
 used for rapid local iteration before any real data exists, but is not the
 production workflow.
 
