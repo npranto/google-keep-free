@@ -11,7 +11,7 @@ Format: `UI → server boundary → application/domain logic → database → re
 ```
 UI: owner visits app, not signed in
 → (app)/layout.tsx server-side auth check (Clerk) fails
-→ redirect to /sign-in (Clerk-hosted UI)
+→ redirect to /sign-in (Clerk's <SignIn /> component, rendered in this app)
 → owner signs in / signs up via Clerk
 → Clerk redirects back with a verified session
 → (app)/layout.tsx auth check passes; getOwnerId() will resolve this session's userId

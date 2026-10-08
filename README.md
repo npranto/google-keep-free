@@ -58,7 +58,7 @@ Available scripts:
 | `npm run format:check` | Check formatting              |
 | `npm test`             | Run unit tests (Vitest)       |
 
-No environment variables, database, or auth setup are needed to run the app yet. [`lib/env.ts`](lib/env.ts) validates `DATABASE_URL` with Zod and will fail fast once the database client imports it; copy [`.env.example`](.env.example) to `.env.local` and fill it in by then. Database and auth setup arrive with later tickets (see the roadmap).
+Copy [`.env.example`](.env.example) to `.env.local` and fill it in: a Neon `DATABASE_URL` and the Clerk publishable and secret keys from your Clerk application. [`lib/env.ts`](lib/env.ts) validates them with Zod and fails fast on a missing or malformed value. Signed-out visitors to `/` are redirected to `/sign-in`.
 
 ## Project structure
 
@@ -80,4 +80,4 @@ docs/         Product, architecture, design, ADR, and agent docs (source of trut
 
 ## Roadmap
 
-The MVP is broken into tickets under [.scratch/google-keep-free-mvp/](.scratch/google-keep-free-mvp/): start with [spec.md](.scratch/google-keep-free-mvp/spec.md), then browse [issues/](.scratch/google-keep-free-mvp/issues/). Planned but not yet built: environment validation and DB connection, Clerk auth, the app shell, Vercel deploy, and the note features listed above.
+The MVP is broken into tickets under [.scratch/google-keep-free-mvp/](.scratch/google-keep-free-mvp/): start with [spec.md](.scratch/google-keep-free-mvp/spec.md), then browse [issues/](.scratch/google-keep-free-mvp/issues/). Planned but not yet built: the app shell, Vercel deploy, and the note features listed above.

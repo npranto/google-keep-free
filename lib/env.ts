@@ -7,6 +7,8 @@ export const envSchema = z.object({
     protocol: /^postgres(ql)?$/,
     error: "must be a postgres:// or postgresql:// URL",
   }),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1, "is required"),
+  CLERK_SECRET_KEY: z.string().min(1, "is required"),
 });
 
 export type Env = z.infer<typeof envSchema>;
