@@ -246,7 +246,7 @@ strictly row-major) visual fill order.
   skeleton swap for a ~300ms window.
 - **Toggle mutations** (pin/archive/trash/color): no loading state beyond the
   existing optimistic UI - instant reflect, rollback only on failure.
-- **Initial load/auth**: handled by Clerk's hosted UI and `loading.tsx`; no
+- **Initial load/auth**: handled by Clerk's sign-in and sign-up components and `loading.tsx`; no
   additional custom screen.
 
 ## 14. Empty states

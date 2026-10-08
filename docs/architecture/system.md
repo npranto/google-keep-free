@@ -58,6 +58,7 @@ lib/
     result.ts                             # ActionResult<T> discriminated union
   env.ts                                    # Zod-validated environment variables
   log.ts                                     # structured logging helper
+proxy.ts                                      # clerkMiddleware(): makes the session readable; enforcement is getOwnerId()
 app/
   layout.tsx                                  # root layout: ClerkProvider, fonts
   (app)/

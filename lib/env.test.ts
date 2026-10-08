@@ -9,6 +9,8 @@ const { validUrl } = vi.hoisted(() => {
   const validUrl =
     "postgresql://user:pass@ep-cool-123-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require";
   process.env.DATABASE_URL = validUrl;
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = "pk_test_example";
+  process.env.CLERK_SECRET_KEY = "sk_test_example";
   return { validUrl };
 });
 
@@ -30,40 +32,60 @@ describe("env module", () => {
 });
 
 describe("parseEnv", () => {
-  it("loads a well-formed DATABASE_URL", () => {
-    expect(parseEnv({ DATABASE_URL: validUrl })).toEqual({
-      DATABASE_URL: validUrl,
-    });
+  const validEnv = {
+    DATABASE_URL: validUrl,
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_example",
+    CLERK_SECRET_KEY: "sk_test_example",
+  };
+
+  it("loads a well-formed environment", () => {
+    expect(parseEnv(validEnv)).toEqual(validEnv);
   });
 
   it("accepts the postgres:// scheme", () => {
     const url = "postgres://user:pass@localhost:5432/keep";
-    expect(parseEnv({ DATABASE_URL: url }).DATABASE_URL).toBe(url);
+    expect(parseEnv({ ...validEnv, DATABASE_URL: url }).DATABASE_URL).toBe(url);
   });
 
   it("fails naming DATABASE_URL when it is missing", () => {
-    expect(() => parseEnv({})).toThrow(/DATABASE_URL/);
+    expect(() => parseEnv({ ...validEnv, DATABASE_URL: undefined })).toThrow(
+      /DATABASE_URL/,
+    );
   });
 
   it("fails naming DATABASE_URL when it is empty", () => {
-    expect(() => parseEnv({ DATABASE_URL: "" })).toThrow(/DATABASE_URL/);
+    expect(() => parseEnv({ ...validEnv, DATABASE_URL: "" })).toThrow(
+      /DATABASE_URL/,
+    );
   });
 
   it("fails naming DATABASE_URL when it is not a URL", () => {
-    expect(() => parseEnv({ DATABASE_URL: "not a url" })).toThrow(
+    expect(() => parseEnv({ ...validEnv, DATABASE_URL: "not a url" })).toThrow(
       /DATABASE_URL/,
     );
   });
 
   it("fails naming DATABASE_URL when the scheme is not postgres", () => {
-    expect(() => parseEnv({ DATABASE_URL: "https://example.com/db" })).toThrow(
-      /DATABASE_URL/,
-    );
+    expect(() =>
+      parseEnv({ ...validEnv, DATABASE_URL: "https://example.com/db" }),
+    ).toThrow(/DATABASE_URL/);
+  });
+
+  it("fails naming CLERK_SECRET_KEY when it is missing", () => {
+    expect(() =>
+      parseEnv({ ...validEnv, CLERK_SECRET_KEY: undefined }),
+    ).toThrow(/CLERK_SECRET_KEY/);
+  });
+
+  it("fails naming the publishable key when it is empty", () => {
+    expect(() =>
+      parseEnv({ ...validEnv, NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "" }),
+    ).toThrow(/NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY/);
   });
 
   it("does not echo the invalid value in the error", () => {
     const secret = "mysql://user:hunter2@host/db";
-    expect(() => parseEnv({ DATABASE_URL: secret })).toThrow(
+    expect(() => parseEnv({ ...validEnv, DATABASE_URL: secret })).toThrow(
       expect.objectContaining({
         message: expect.not.stringContaining("hunter2"),
       }),
