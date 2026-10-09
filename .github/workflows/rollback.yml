@@ -26,11 +26,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to roll back to, for example v1.4.2. Empty = the version before the one live now."
+        description: "Version to roll back to, i.e., v1.4.2. Empty = the version before the one live now."
         required: false
         type: string
       dry_run:
-        description: "Only show which version and deployment would be used. Production is not changed."
+        description: "Dry run only, only show which version and deployment would be used. Production will NOT be changed."
         required: false
         type: boolean
         default: false
