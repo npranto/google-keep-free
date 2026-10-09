@@ -71,8 +71,8 @@ must preserve:
 
 ## User journeys
 
-**Authenticate**: an unauthenticated visitor is redirected to Clerk's
-hosted sign-in/sign-up; on a verified session, the app resolves the Clerk
+**Authenticate**: an unauthenticated visitor is redirected to `/sign-in`, which
+renders Clerk's sign-in/sign-up components inside the app; on a verified session, the app resolves the Clerk
 `userId` as the Owner for all subsequent reads/writes and renders the Notes
 grid. No local user record is created.
 
@@ -132,7 +132,8 @@ the query reverts to the prior view/label.
 
 ## Functional requirements
 
-- Sign up and log in (Clerk-hosted).
+- Sign up and log in (Clerk components on `/sign-in` and `/sign-up`; Google sign-in
+  needs the production Clerk instance on the app's own domain).
 - Create, edit Notes with title and body; autosave while editing.
 - Pin / unpin Notes (Active only).
 - Archive / restore Notes.
