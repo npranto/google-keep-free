@@ -12,7 +12,8 @@
     "format:check": "prettier --check app components lib",
     "test": "vitest run",
     "db:generate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs generate",
-    "db:migrate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs migrate"
+    "db:migrate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs migrate",
+    "db:check-connection": "node --env-file=.env.local lib/db/check-connection.mts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.9.11",
