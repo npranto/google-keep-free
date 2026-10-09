@@ -70,6 +70,20 @@ docs/         Product, architecture, design, ADR, and agent docs (source of trut
 .scratch/     Local MVP spec and ticket files
 ```
 
+## Releases
+
+Every merge to `main` gets a version, a `vX.Y.Z` tag, and a GitHub release, created by the [Release workflow](.github/workflows/release.yml). The pull request title picks the bump (markers are case-insensitive):
+
+| PR title | 0.1.0 becomes |
+|---|:---:|
+| `Fix sign-in redirect` (or `[PATCH] ...`) | 0.1.1 |
+| `[MINOR] Archive a note` | 0.2.0 |
+| `[MAJOR] Remove the v1 notes API` | 1.0.0 |
+
+The first merge after the workflow lands releases `v0.1.0`. If several pull requests merge between versions, the largest bump wins. The tag is the only record of the version: `package.json` is not changed.
+
+To put production back on an earlier version, run **Actions > Rollback > Run workflow**. Leave `version` empty to go back one version, or enter a tag such as `v0.1.0`. Turn on `dry_run` first to see which version and deployment it would use. It needs the repository secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. Rollback moves production only: revert the bad pull request afterwards.
+
 ## Documentation
 
 - [docs/product](docs/product/PROJECT_BRIEF.md) - project brief: scope, journey, non-goals
