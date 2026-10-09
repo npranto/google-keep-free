@@ -1,0 +1,107 @@
+# Template owned by /ns-to-deploy setup-versioning. Copied to .github/workflows/release.yml.
+#
+# On every merge to the production branch: work out the next semantic version,
+# create the tag, and publish a GitHub release with generated notes.
+#
+# The bump comes from the title of the merged pull request:
+#   [MAJOR] -> 1.4.2 becomes 2.0.0
+#   [MINOR] -> 1.4.2 becomes 1.5.0
+#   [PATCH] or no marker -> 1.4.2 becomes 1.4.3
+# Markers are case-insensitive. If several pull requests merged since the last
+# version, the largest bump among them wins.
+#
+# The git tag is the only record of the version. Nothing is committed back to
+# the branch, so this never touches package.json or CHANGELOG.md.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+# One release at a time, in order. A queued run is never cancelled mid-release.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Version, tag, and release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out with full history and tags
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Version, tag, and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # Used once, when the repo has no version tag yet.
+          INITIAL_VERSION: "0.1.0"
+        run: |
+          set -euo pipefail
+
+          latest=$(git tag --list 'v*' --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1 || true)
+
+          # A re-run, or a run that queued behind a newer one: this commit is
+          # already inside a released version.
+          if [ -n "$latest" ] && git merge-base --is-ancestor "$GITHUB_SHA" "$latest"; then
+            echo "Commit $GITHUB_SHA is already part of $latest. Nothing to release."
+            echo "Already released in \`$latest\`. No new version." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if [ -z "$latest" ]; then
+            bump="initial"
+            next="v${INITIAL_VERSION}"
+          else
+            # Largest marker among everything merged since the last version.
+            # The pull request title is read from the API, so this works the
+            # same for squash, merge-commit, and rebase merges. A commit pushed
+            # without a pull request falls back to its own subject line.
+            rank=1
+            shopt -s nocasematch
+            for sha in $(git rev-list --first-parent "${latest}..${GITHUB_SHA}"); do
+              title=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${sha}/pulls" --jq '.[0].title // empty' 2>/dev/null || true)
+              if [ -z "$title" ]; then
+                title=$(git log -1 --format=%s "$sha")
+              fi
+              if [[ "$title" == *"[major]"* ]]; then
+                rank=3
+              elif [[ "$title" == *"[minor]"* ]] && [ "$rank" -lt 2 ]; then
+                rank=2
+              fi
+            done
+            shopt -u nocasematch
+
+            IFS=. read -r major minor patch <<< "${latest#v}"
+            case "$rank" in
+              3) bump="major"; next="v$((major + 1)).0.0" ;;
+              2) bump="minor"; next="v${major}.$((minor + 1)).0" ;;
+              *) bump="patch"; next="v${major}.${minor}.$((patch + 1))" ;;
+            esac
+          fi
+
+          echo "Releasing $next ($bump) at $GITHUB_SHA, previous version: ${latest:-none}"
+
+          if [ -n "$latest" ]; then
+            gh release create "$next" --target "$GITHUB_SHA" --title "$next" --generate-notes --notes-start-tag "$latest"
+          else
+            gh release create "$next" --target "$GITHUB_SHA" --title "$next" --generate-notes
+          fi
+
+          {
+            echo "### Released \`$next\`"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Bump | $bump |"
+            echo "| Previous version | ${latest:-none} |"
+            echo "| Commit | \`$GITHUB_SHA\` |"
+            echo "| Release | ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${next} |"
+          } >> "$GITHUB_STEP_SUMMARY"

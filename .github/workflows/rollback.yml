@@ -1,0 +1,198 @@
+# Template owned by /ns-to-deploy setup-versioning. Copied to .github/workflows/rollback.yml.
+#
+# Run by hand (Actions > Rollback > Run workflow) to put production back on a
+# released version. Leave "version" empty to go back one version from what is
+# live now, or name any version tag to pick it.
+#
+# It moves production only. It does not change the code on the production
+# branch: revert the bad pull request afterwards, or the next merge ships the
+# same problem again.
+#
+# How production is moved (Vercel):
+#   1. Instant rollback to the production deployment that was built from the
+#      version's commit. Seconds, no rebuild. On the Hobby plan Vercel only
+#      allows this for the immediately previous production deployment.
+#   2. If that deployment no longer exists or instant rollback is refused, the
+#      version's code is rebuilt and deployed to production. Minutes.
+#
+# After an instant rollback Vercel stops pointing the production domain at new
+# deployments until one is promoted again (vercel promote, or Promote in the
+# dashboard). That is deliberate: a merge cannot silently undo the rollback.
+#
+# Needs repository secrets VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID.
+name: Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to roll back to, for example v1.4.2. Empty = the version before the one live now."
+        required: false
+        type: string
+      dry_run:
+        description: "Only show which version and deployment would be used. Production is not changed."
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rollback
+  cancel-in-progress: false
+
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  rollback:
+    name: Roll production back
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out with full history and tags
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check secrets
+        run: |
+          set -euo pipefail
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Repository secret $name is not set."
+              exit 1
+            fi
+          done
+
+      - name: Resolve the version
+        id: target
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          team_query=""
+          case "$VERCEL_ORG_ID" in team_*) team_query="teamId=${VERCEL_ORG_ID}" ;; esac
+
+          versions=$(git tag --list 'v*' --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true)
+          if [ -z "$versions" ]; then
+            echo "::error::This repository has no version tags to roll back to."
+            exit 1
+          fi
+
+          # What production is serving now, when Vercel reports its commit.
+          live_sha=$(curl -fsS -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            "https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}?${team_query}" \
+            | jq -r '.targets.production.meta.githubCommitSha // empty' || true)
+          live=""
+          if [ -n "$live_sha" ]; then
+            live=$(git tag --points-at "$live_sha" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1 || true)
+          fi
+
+          if [ -n "$INPUT_VERSION" ]; then
+            target="v${INPUT_VERSION#v}"
+            if ! grep -qxF "$target" <<< "$versions"; then
+              echo "::error::$target is not a version tag in this repository. Newest versions:"
+              head -n 10 <<< "$versions"
+              exit 1
+            fi
+          elif [ -n "$live" ]; then
+            # The next version below the live one.
+            target=$(awk -v live="$live" 'found { print; exit } $0 == live { found = 1 }' <<< "$versions")
+            if [ -z "$target" ]; then
+              echo "::error::$live is the oldest version. There is nothing before it to roll back to."
+              exit 1
+            fi
+          else
+            # Live version unknown: assume the newest version is live.
+            target=$(sed -n 2p <<< "$versions")
+            if [ -z "$target" ]; then
+              echo "::error::Only one version exists. There is nothing before it to roll back to."
+              exit 1
+            fi
+          fi
+
+          sha=$(git rev-list -n 1 "$target")
+          if [ -n "$live_sha" ] && [ "$sha" = "$live_sha" ]; then
+            echo "::error::Production is already on $target."
+            exit 1
+          fi
+
+          # The production deployment Vercel built from that commit, if it still exists.
+          deployment=$(curl -fsS -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            "https://api.vercel.com/v6/deployments?projectId=${VERCEL_PROJECT_ID}&target=production&state=READY&sha=${sha}&limit=1&${team_query}" \
+            | jq -r '.deployments[0].url // empty' || true)
+
+          {
+            echo "version=$target"
+            echo "sha=$sha"
+            echo "live=${live:-unknown}"
+            echo "deployment=$deployment"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "### Rollback target: \`$target\`"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Live now | ${live:-unknown} |"
+            echo "| Roll back to | $target (\`$sha\`) |"
+            echo "| Existing deployment | ${deployment:-none found, will rebuild from the tag} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Stop here on a dry run
+        if: inputs.dry_run
+        run: echo "Dry run. Production was not changed." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Instant rollback to the existing deployment
+        id: instant
+        if: ${{ !inputs.dry_run && steps.target.outputs.deployment != '' }}
+        continue-on-error: true
+        env:
+          DEPLOYMENT: ${{ steps.target.outputs.deployment }}
+        run: npx --yes vercel@latest rollback "$DEPLOYMENT" --timeout 5m --token "$VERCEL_TOKEN"
+
+      # Slower path: no deployment left for this version, or Vercel refused the
+      # instant rollback (Hobby plan, older than the previous deployment).
+      - name: Check out the version to rebuild it
+        if: ${{ !inputs.dry_run && steps.instant.outcome != 'success' }}
+        env:
+          VERSION: ${{ steps.target.outputs.version }}
+        run: git checkout --detach "$VERSION"
+
+      - name: Set up Node
+        if: ${{ !inputs.dry_run && steps.instant.outcome != 'success' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Rebuild and deploy the version to production
+        if: ${{ !inputs.dry_run && steps.instant.outcome != 'success' }}
+        run: |
+          set -euo pipefail
+          corepack enable
+          npx --yes vercel@latest pull --yes --environment=production --token "$VERCEL_TOKEN"
+          npx --yes vercel@latest build --prod --token "$VERCEL_TOKEN"
+          npx --yes vercel@latest deploy --prebuilt --prod --token "$VERCEL_TOKEN"
+
+      - name: Report
+        if: ${{ !inputs.dry_run }}
+        env:
+          VERSION: ${{ steps.target.outputs.version }}
+          INSTANT: ${{ steps.instant.outcome }}
+        run: |
+          {
+            if [ "$INSTANT" = "success" ]; then
+              echo "Production is back on \`$VERSION\` by instant rollback."
+              echo ""
+              echo "Vercel will not point the production domain at new deployments until one is promoted again. After the fix is merged, promote its deployment."
+            else
+              echo "Production is back on \`$VERSION\`, rebuilt from the tag."
+              echo ""
+              echo "The next merge to the production branch deploys that branch again. Revert the bad change before merging anything else."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
