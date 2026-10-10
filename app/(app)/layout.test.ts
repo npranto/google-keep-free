@@ -11,6 +11,8 @@ const { authMock, redirectMock } = vi.hoisted(() => ({
 vi.mock("@clerk/nextjs/server", () => ({ auth: authMock }));
 vi.mock("next/navigation", () => ({ redirect: redirectMock }));
 
+import { AppShell } from "@/components/shell/AppShell";
+
 import AppLayout from "./layout";
 
 beforeEach(() => {
@@ -26,9 +28,11 @@ describe("(app) layout guard", () => {
     );
   });
 
-  it("renders its children for a signed-in Owner", async () => {
+  it("wraps the page in AppShell for a signed-in Owner", async () => {
     authMock.mockResolvedValue({ userId: "user_123" });
-    await expect(AppLayout({ children: "page" })).resolves.toBe("page");
+    const result = await AppLayout({ children: "page" });
+    expect(result.type).toBe(AppShell);
+    expect(result.props.children).toBe("page");
     expect(redirectMock).not.toHaveBeenCalled();
   });
 });

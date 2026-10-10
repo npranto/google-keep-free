@@ -47,16 +47,17 @@ Then open http://localhost:3000.
 
 Available scripts:
 
-| Script                 | Purpose                       |
-| ---------------------- | ----------------------------- |
-| `npm run dev`          | Start the development server  |
-| `npm run build`        | Create a production build     |
-| `npm run start`        | Serve the production build    |
-| `npm run lint`         | Run ESLint                    |
-| `npm run typecheck`    | Run the TypeScript compiler   |
-| `npm run format`       | Format code with Prettier     |
-| `npm run format:check` | Check formatting              |
-| `npm test`             | Run unit tests (Vitest)       |
+| Script                 | Purpose                          |
+| ---------------------- | -------------------------------- |
+| `npm run dev`          | Start the development server     |
+| `npm run build`        | Create a production build        |
+| `npm run start`        | Serve the production build       |
+| `npm run lint`         | Run ESLint                       |
+| `npm run typecheck`    | Run the TypeScript compiler      |
+| `npm run format`       | Format code with Prettier        |
+| `npm run format:check` | Check formatting                 |
+| `npm test`             | Run unit tests (Vitest)          |
+| `npm run e2e`          | Run E2E smoke tests (Playwright) |
 
 Copy [`.env.example`](.env.example) to `.env.local` and fill it in: a Neon `DATABASE_URL` and the Clerk publishable and secret keys from your Clerk application. [`lib/env.ts`](lib/env.ts) validates them with Zod and fails fast on a missing or malformed value. Signed-out visitors to `/` are redirected to `/sign-in`.
 
@@ -64,7 +65,9 @@ Copy [`.env.example`](.env.example) to `.env.local` and fill it in: a Neon `DATA
 
 ```
 app/          Next.js App Router: root layout, global styles, favicon, and the (app) route group
-components/   Shared components; ui/ holds shadcn/ui primitives (currently Button)
+components/   Shared components; shell/ holds the app shell (TopBar, Sidebar, AppShell),
+              notes/ holds note-related components (EmptyState), ui/ holds shadcn/ui primitives
+e2e/          Playwright E2E smoke tests
 lib/          Shared utilities (the cn class-name helper and the Zod-validated env module)
 docs/         Product, architecture, design, ADR, and agent docs (source of truth)
 .scratch/     Local MVP spec and ticket files
@@ -74,11 +77,11 @@ docs/         Product, architecture, design, ADR, and agent docs (source of trut
 
 Every merge to `main` gets a version, a `vX.Y.Z` tag, and a GitHub release, created by the [Release workflow](.github/workflows/release.yml). The pull request title picks the bump (markers are case-insensitive):
 
-| PR title | 0.1.0 becomes |
-|---|:---:|
-| `Fix sign-in redirect` (or `[PATCH] ...`) | 0.1.1 |
-| `[MINOR] Archive a note` | 0.2.0 |
-| `[MAJOR] Remove the v1 notes API` | 1.0.0 |
+| PR title                                  | 0.1.0 becomes |
+| ----------------------------------------- | :-----------: |
+| `Fix sign-in redirect` (or `[PATCH] ...`) |     0.1.1     |
+| `[MINOR] Archive a note`                  |     0.2.0     |
+| `[MAJOR] Remove the v1 notes API`         |     1.0.0     |
 
 The first merge after the workflow lands releases `v0.1.0`. If several pull requests merge between versions, the largest bump wins. The tag is the only record of the version: `package.json` is not changed.
 
@@ -94,4 +97,4 @@ To put production back on an earlier version, run **Actions > Rollback > Run wor
 
 ## Roadmap
 
-The MVP is broken into tickets under [.scratch/google-keep-free-mvp/](.scratch/google-keep-free-mvp/): start with [spec.md](.scratch/google-keep-free-mvp/spec.md), then browse [issues/](.scratch/google-keep-free-mvp/issues/). Planned but not yet built: the app shell, Vercel deploy, and the note features listed above.
+The MVP is broken into tickets under [.scratch/google-keep-free-mvp/](.scratch/google-keep-free-mvp/): start with [spec.md](.scratch/google-keep-free-mvp/spec.md), then browse [issues/](.scratch/google-keep-free-mvp/issues/). Planned but not yet built: Vercel deploy and the note features listed above.
