@@ -6,4 +6,8 @@ export default defineConfig({
   resolve: {
     alias: { "@": fileURLToPath(new URL(".", import.meta.url)) },
   },
+  test: {
+    // e2e/ runs under Playwright's own runner (npm run e2e), not Vitest.
+    exclude: ["**/node_modules/**", "**/e2e/**"],
+  },
 });
