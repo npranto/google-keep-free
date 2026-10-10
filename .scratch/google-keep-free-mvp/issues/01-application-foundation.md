@@ -28,10 +28,10 @@ wiring (input can render but does nothing), composer.
 
 - [x] Visiting the app signed-out redirects to Clerk sign-in; no local user record is
       ever created. (01.03, verified on production at https://gfk.lol)
-- [ ] Signing in lands on `/` showing the shell and the Notes empty state ("Notes you
-      add appear here").
-- [ ] Sidebar highlights "Notes" as selected; Archive/Trash nav items are present but
-      inert (routes not yet meaningful).
+- [x] Signing in lands on `/` showing the shell and the Notes empty state ("Notes you
+      add appear here"). (01.04, verified on production at https://gfk.lol)
+- [x] Sidebar highlights "Notes" as selected; Archive/Trash nav items are present but
+      inert (routes not yet meaningful). (01.04)
 - [x] `getOwnerId()` throws/redirects if called with no session; never accepts a
       client-supplied id. (01.03)
 
@@ -74,7 +74,7 @@ This ticket is now an index. Implement the children in order (strict chain):
 1. [x] ✅01.01-nextjs-scaffold-tailwind-shadcn.md
 2. [x] ✅01.02-env-validation-and-db-connection.md (blocked by 01.01)
 3. [x] ✅01.03-clerk-auth-guard-and-owner-id.md (blocked by 01.02)
-4. [ ] 01.04-static-app-shell-and-empty-state.md (blocked by 01.03)
+4. [x] ✅01.04-static-app-shell-and-empty-state.md (blocked by 01.03)
 5. [ ] 01.05-vercel-deploy.md (blocked by 01.04)
 
 ## Completion checklist
