@@ -3,6 +3,7 @@ out
 build
 coverage
 package-lock.json
+lib/db/migrations
 next-env.d.ts
 tsconfig.tsbuildinfo
 CHANGELOG.md
