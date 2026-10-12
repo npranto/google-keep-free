@@ -21,7 +21,8 @@ const benefits = [
   {
     id: "organize",
     title: "Keep it organized",
-    description: "Sort your notes your way, so the important ones stay close.",
+    description:
+      "Pin, color and label your notes, so the important ones stay close.",
   },
   {
     id: "find",
@@ -76,13 +77,15 @@ export default function TryOutPage() {
         </div>
       </section>
 
-      <section className="flex-1 border-t border-border bg-muted">
+      <section className="flex flex-1 flex-col justify-center border-t border-border bg-muted">
         <div className={`${inner} text-center`}>
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
             More is on the way
           </h2>
+          {/* Full foreground on purpose: muted text on bg-muted falls under
+              4.5:1 contrast in light mode. */}
           <p className="mx-auto mt-4 max-w-xl text-pretty">
-            This page holds placeholder copy for now. The real one is still
+            This page holds placeholder copy for now. The real copy is still
             being written.
           </p>
         </div>
