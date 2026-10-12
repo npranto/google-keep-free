@@ -2,11 +2,11 @@
 
 A fast, personal notes app inspired by Google Keep. An individual owner captures short notes quickly, organizes them with pins, colors and labels, and finds them again later. Desktop gets a Keep-like grid; mobile gets a simple single column. See the [project brief](docs/product/PROJECT_BRIEF.md) for the full problem statement and non-goals.
 
-**Status: early scaffold.** Only the Next.js app shell, Tailwind CSS, and a shadcn/ui baseline exist today. Every feature below is **planned**, not yet working.
+**Status: foundation shipped.** Authentication, the database connection, and the signed-in app shell with an empty Notes view are live at https://gfk.lol. The note features below are **planned**, not yet working.
 
-## MVP capabilities (planned)
+## MVP capabilities
 
-- Sign up and log in
+- Sign up and log in (shipped)
 - Create and edit notes (title and body) with autosave
 - Pin, archive, trash, restore, and permanently delete notes
 - Assign a color and labels to notes
@@ -21,13 +21,13 @@ Current:
 
 - Next.js 16 (App Router), React 19, TypeScript
 - Tailwind CSS 4 and shadcn/ui (Radix, class-variance-authority, lucide-react)
+- Clerk for authentication
+- Neon Postgres accessed through Drizzle (the connection only; tables arrive with the first note ticket)
+- Deployment on Vercel
 
 Planned (per the architecture docs):
 
 - Server Components for reads and Server Actions for writes, in a single full-stack Next.js app with no separate backend
-- Neon Postgres accessed through Drizzle
-- Clerk for authentication
-- Deployment on Vercel
 
 See the [system architecture](docs/architecture/system.md), [ADR 0001](docs/adr/0001-single-full-stack-nextjs-app-on-vercel-and-neon.md), and [ADR 0002](docs/adr/0002-clerk-for-authentication.md) for the reasoning.
 
@@ -64,11 +64,13 @@ Copy [`.env.example`](.env.example) to `.env.local` and fill it in: a Neon `DATA
 ## Project structure
 
 ```
-app/          Next.js App Router: root layout, global styles, favicon, and the (app) route group
+app/          Next.js App Router: root layout, global styles, favicon, the (app) route group,
+              the Clerk sign-in and sign-up routes, and the public pages
 components/   Shared components; shell/ holds the app shell (TopBar, Sidebar, AppShell),
               notes/ holds note-related components (EmptyState), ui/ holds shadcn/ui primitives
 e2e/          Playwright E2E smoke tests
-lib/          Shared utilities (the cn class-name helper and the Zod-validated env module)
+lib/          Shared modules: auth/ (the signed-in Owner), db/ (the Drizzle client for Neon),
+              the Zod-validated env module, and the cn class-name helper
 docs/         Product, architecture, design, ADR, and agent docs (source of truth)
 .scratch/     Local MVP spec and ticket files
 ```
@@ -97,4 +99,4 @@ To put production back on an earlier version, run **Actions > Rollback > Run wor
 
 ## Roadmap
 
-The MVP is broken into tickets under [.scratch/google-keep-free-mvp/](.scratch/google-keep-free-mvp/): start with [spec.md](.scratch/google-keep-free-mvp/spec.md), then browse [issues/](.scratch/google-keep-free-mvp/issues/). Planned but not yet built: Vercel deploy and the note features listed above.
+The MVP is broken into tickets under [.scratch/google-keep-free-mvp/](.scratch/google-keep-free-mvp/): start with [spec.md](.scratch/google-keep-free-mvp/spec.md), then browse [issues/](.scratch/google-keep-free-mvp/issues/). Ticket 01, the application foundation including the Vercel deploy, has shipped. Planned but not yet built: the note features listed above.
