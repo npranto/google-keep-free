@@ -85,7 +85,7 @@ Every merge to `main` gets a version, a `vX.Y.Z` tag, and a GitHub release, crea
 | `[MINOR] Archive a note`                  |     0.2.0     |
 | `[MAJOR] Remove the v1 notes API`         |     1.0.0     |
 
-The first merge after the workflow lands releases `v0.1.0`. If several pull requests merge between versions, the largest bump wins. The tag is the only record of the version: `package.json` is not changed.
+Each pull request carries the version it releases as: `package.json` and `package-lock.json` hold it, in a `chore(release): vX.Y.Z` commit, worked out from the newest tag and the title's marker. The tagged commit therefore contains its own version. If a merge did not carry the bump, the Release run still tags a version worked out from the title, and its summary says `package.json` is behind. If several pull requests merge between versions, the largest bump wins.
 
 To put production back on an earlier version, run **Actions > Rollback > Run workflow**. Leave `version` empty to go back one version, or enter a tag such as `v0.1.0`. Turn on `dry_run` first to see which version and deployment it would use. It needs the repository secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. Rollback moves production only: revert the bad pull request afterwards.
 
