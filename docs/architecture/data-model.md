@@ -15,7 +15,7 @@ Three tables. No local users table — every owned row carries an opaque Clerk u
 | `title` | `varchar(300)`, not null, default `''` | Server-enforced cap; backstops Zod validation. |
 | `body` | `varchar(20000)`, not null, default `''` | Server-enforced cap; backstops Zod validation. |
 | `state` | `note_state` enum, not null, default `'active'` | One of `active` / `archived` / `trashed`. See State representation below. |
-| `color` | `note_color` enum, not null, default `'default'` | Fixed palette (~8-12 named tokens incl. `default`), not raw hex. Exact token list settled during the design-contract phase. |
+| `color` | `note_color` enum, not null, default `'default'` | Fixed palette of 11 named tokens, not raw hex: `default`, `coral`, `peach`, `sand`, `sage`, `fog`, `storm`, `dusk`, `blossom`, `clay`, `chalk` (shades in `ui-spec.md`). Postgres cannot remove an enum value, so tokens are only added or renamed. |
 | `pinned` | `boolean`, not null, default `false` | Only meaningful when `state = 'active'`; cleared on any transition away from Active. |
 | `version` | `integer`, not null, default `1` | Optimistic concurrency. Incremented on every successful `updateNote`. |
 | `created_at` | `timestamptz`, not null, default `now()` | |
