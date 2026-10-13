@@ -9,7 +9,7 @@
 
 Run in order. Each is its own PR.
 
-- [ ] 02.01 Notes table and migration
+- [x] 02.01 Notes table and migration (PR #41, v0.2.12)
 - [ ] 02.02 createNote action and active Notes query
 - [ ] 02.03 Composer and Notes grid
 
