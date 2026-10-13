@@ -13,6 +13,14 @@ Postgres, Tailwind and shadcn/ui. One full-stack app on Vercel (ADR-0001, ADR-00
 enforced by `getOwnerId()` (`lib/auth`), called from the `(app)` layout and every
 Server Action.
 
+## Database
+
+Tables are defined in `lib/db/schema.ts` and migrated with Drizzle Kit
+(`lib/db/migrations/`). Migrations are applied by hand, never in the build, so a
+deploy does not change the database. Local and Preview currently share one Neon
+database (as of ticket 02.01); Production has its own and needs the migration
+run against it before the code that reads the new table is released.
+
 ## Hosting and deploy
 
 - Vercel project `google-keep-free`, linked via `.vercel/project.json`.
@@ -37,7 +45,8 @@ GitHub release on merge, at the version the PR wrote into `package.json`; the
 ## Commands
 
 `npm test` (vitest) · `npm run e2e` (Playwright) · `npm run typecheck` ·
-`npm run lint` · `npm run format:check` · `npm run db:check-connection`
+`npm run lint` · `npm run format:check` · `npm run db:check-connection` ·
+`npm run db:generate` · `npm run db:migrate`
 
 ## Documentation gaps
 
