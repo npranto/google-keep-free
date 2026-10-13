@@ -3,15 +3,20 @@
 # On every merge to the production branch: work out the next semantic version,
 # create the tag, and publish a GitHub release with generated notes.
 #
-# The bump comes from the title of the merged pull request:
+# The version is the one the merged pull request wrote into package.json, when
+# that is newer than the last tag. /ns-to-pr puts it there, so the tagged commit
+# contains its own version.
+#
+# A merge that did not carry the bump still gets a version, worked out from the
+# title of the merged pull request:
 #   [MAJOR] -> 1.4.2 becomes 2.0.0
 #   [MINOR] -> 1.4.2 becomes 1.5.0
 #   [PATCH] or no marker -> 1.4.2 becomes 1.4.3
 # Markers are case-insensitive. If several pull requests merged since the last
-# version, the largest bump among them wins.
+# version, the largest bump among them wins. The run summary then says that
+# package.json is behind; the next pull request's bump catches it up.
 #
-# The git tag is the only record of the version. Nothing is committed back to
-# the branch, so this never touches package.json or CHANGELOG.md.
+# Nothing is committed back to the branch, and CHANGELOG.md is never touched.
 name: Release
 
 on:
@@ -87,7 +92,39 @@ jobs:
             esac
           fi
 
-          echo "Releasing $next ($bump) at $GITHUB_SHA, previous version: ${latest:-none}"
+          # The version the pull request wrote into package.json wins when it
+          # is newer than the last tag. Otherwise keep the one worked out above.
+          source="the pull request title"
+          pkg=""
+          if [ -f package.json ]; then
+            pkg=$(jq -r '.version // empty' package.json 2>/dev/null || true)
+          fi
+          if [[ "$pkg" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            newest=$(printf '%s\n%s\n' "${latest#v}" "$pkg" | sort -V | tail -n 1)
+            if [ -z "$latest" ] || { [ "$newest" = "$pkg" ] && [ "v$pkg" != "$latest" ]; }; then
+              next="v$pkg"
+              source="package.json"
+              if [ -n "$latest" ]; then
+                IFS=. read -r pkg_major pkg_minor _ <<< "$pkg"
+                if [ "$pkg_major" != "$major" ]; then
+                  bump="major"
+                elif [ "$pkg_minor" != "$minor" ]; then
+                  bump="minor"
+                else
+                  bump="patch"
+                fi
+              fi
+            fi
+          fi
+          if [ "$source" = "package.json" ]; then
+            in_step="yes"
+          elif [ -n "$pkg" ]; then
+            in_step="no: it says $pkg, so the pull request did not carry the bump"
+          else
+            in_step="no version in package.json"
+          fi
+
+          echo "Releasing $next ($bump, from $source) at $GITHUB_SHA, previous version: ${latest:-none}"
 
           if [ -n "$latest" ]; then
             gh release create "$next" --target "$GITHUB_SHA" --title "$next" --generate-notes --notes-start-tag "$latest"
@@ -101,6 +138,8 @@ jobs:
             echo "| | |"
             echo "|---|---|"
             echo "| Bump | $bump |"
+            echo "| Version from | $source |"
+            echo "| package.json matches | $in_step |"
             echo "| Previous version | ${latest:-none} |"
             echo "| Commit | \`$GITHUB_SHA\` |"
             echo "| Release | ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${next} |"

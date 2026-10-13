@@ -29,8 +29,9 @@ Server Action.
 
 `.github/workflows/`: `healthcheck.yml` (typecheck, lint, test and build on PRs and pushes to `main`),
 `e2e.yml` (the whole Playwright suite on every preview deployment, the `@smoke` tests on
-https://gfk.lol after every production deployment), `release.yml` (version,
-tag, GitHub release on merge; `[PATCH]`/`[MINOR]`/`[MAJOR]` in the PR title),
+https://gfk.lol after every production deployment), `release.yml` (tag and
+GitHub release on merge, at the version the PR wrote into `package.json`; the
+`[PATCH]`/`[MINOR]`/`[MAJOR]` marker in the PR title decides that version),
 `rollback.yml` (manual, back one version by default).
 
 ## Commands
