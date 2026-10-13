@@ -27,10 +27,10 @@ tickets  ✅ 02.01 ─ ⚪ 02.02.01 ─ ⚪ 02.02.02 ─ ⚪ 02.02.03 ─ ⚪ 02
 
 - [x] branch
 - [x] scope-check
-- [ ] implement
-- [ ] verify (local)
-- [ ] understand
-- [ ] review
+- [x] implement
+- [x] verify (local) 28 tests, mutation-checked, VERIFIED
+- [x] understand
+- [x] review (approve with one note, fixed: NUL character)
 - [ ] quality-check
 - [ ] save
 - [ ] pr

@@ -57,4 +57,14 @@ describe("createNoteSchema", () => {
     const result = createNoteSchema.parse({ title: "a", ownerId: "victim" });
     expect(result).not.toHaveProperty("ownerId");
   });
+
+  it.each([
+    ["title", { title: "a\u0000b" }],
+    ["body", { body: "a\u0000b" }],
+  ])(
+    "rejects a NUL character in the %s, which Postgres cannot store",
+    (_name, input) => {
+      expect(createNoteSchema.safeParse(input).success).toBe(false);
+    },
+  );
 });
