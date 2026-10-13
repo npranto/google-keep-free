@@ -27,7 +27,9 @@ Server Action.
 
 ## CI and release
 
-`.github/workflows/`: `healthcheck.yml` (checks on PRs and pushes to `main`), `release.yml` (version,
+`.github/workflows/`: `healthcheck.yml` (typecheck, lint, test and build on PRs and pushes to `main`),
+`e2e.yml` (the whole Playwright suite on every preview deployment, the `@smoke` tests on
+https://gfk.lol after every production deployment), `release.yml` (version,
 tag, GitHub release on merge; `[PATCH]`/`[MINOR]`/`[MAJOR]` in the PR title),
 `rollback.yml` (manual, back one version by default).
 
