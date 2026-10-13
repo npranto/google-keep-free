@@ -17,7 +17,7 @@ Server Action.
 
 Tables are defined in `lib/db/schema.ts` and migrated with Drizzle Kit
 (`lib/db/migrations/`). Migrations are applied by hand, never in the build, so a
-deploy does not change the database. Local and Preview share one Neon database;
+deploy does not change the database. Local and Preview currently share one Neon database (as of ticket 02.01);
 Production has its own and needs the migration run against it before the code
 that reads the new table is released.
 
