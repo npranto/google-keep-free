@@ -1,8 +1,8 @@
-# Progress: 02 Create and persist a Note (umbrella, split into 3)
+# Progress: 02 Create and persist a Note (umbrella, split into 02.01, 02.02.01-03, 02.03)
 
 **Recipe:** ticket ([DELIVER]) x3 · **Mode:** guided · **Teach level:** deep
 
-tickets  ✅ 02.01 ─ ⚪ 02.02 ─ ⚪ 02.03   1 of 3 shipped
+tickets  ✅ 02.01 ─ ⚪ 02.02.01 ─ ⚪ 02.02.02 ─ ⚪ 02.02.03 ─ ⚪ 02.03   1 of 5 shipped
 
 ## 02.01 Notes table and migration · Standard · branch feat/02.01-notes-table-and-migration
 
@@ -21,4 +21,23 @@ tickets  ✅ 02.01 ─ ⚪ 02.02 ─ ⚪ 02.03   1 of 3 shipped
 - [x] shipped
 - [x] close
 
-02.02 and 02.03 follow the same checklist, each on its own branch.
+02.02 was split into 02.02.01 (Quick), 02.02.02 and 02.02.03 (Standard) on 2026-10-13.
+
+## 02.02.01 Note validation and ActionResult · Quick · branch feat/02.02.01-note-validation-and-action-result
+
+- [x] branch
+- [x] scope-check
+- [x] implement
+- [x] verify (local) 28 tests, mutation-checked, VERIFIED
+- [x] understand
+- [x] review (approve with one note, fixed: NUL character)
+- [x] quality-check (14 stages, 11 run, 3 skipped, passed)
+- [x] save
+- [x] pr (#44, v0.2.15)
+- [ ] release
+- [ ] verify (production)
+- [ ] observe
+- [ ] shipped
+- [ ] close
+
+Each remaining ticket follows the same checklist on its own branch.
