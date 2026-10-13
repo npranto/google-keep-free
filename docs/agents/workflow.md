@@ -20,4 +20,4 @@
 
 - **Verification skill:** not set up yet (ticket 01.05.06)
 - **Local env file:** `.env.local`
-- **E2E:** Playwright · `npm run e2e` · CI workflow not set up yet (ticket 01.05.05)
+- **E2E:** Playwright · `npm run e2e` · CI workflow `.github/workflows/e2e.yml` (the whole suite on every preview, `@smoke` on production)

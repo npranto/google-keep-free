@@ -1,0 +1,143 @@
+# Runs the E2E suite against real deployments. CI never builds the app a second
+# time to test it: the deployment is the thing under test.
+#
+#   E2E (preview)     every preview deployment: the whole suite, against the
+#                     deployment's own URL
+#   E2E (production)  every production deployment: only the tests tagged
+#                     @smoke, against the production URL
+#
+# Trigger: the deployment_status event the host's GitHub integration sends
+# (Vercel sends it unless the project turned it off). The run uses this file
+# and the tests as they are at the deployed commit, and its check lands on that
+# commit, so it shows on the pull request with no extra wiring.
+#
+# Vercel names its environments "Preview" and "Production". A monorepo adds the
+# project name, so adjust the two "if" lines there.
+#
+# Repository secrets and variables (Settings > Secrets and variables > Actions):
+#   secret    VERCEL_AUTOMATION_BYPASS_SECRET     gets the preview run past Deployment Protection
+#   secret    CLERK_SECRET_KEY                    @clerk/testing signs the test user in with these
+#   secret    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY   (the Clerk dev instance the previews run on)
+#   secret    E2E_CLERK_TEST_EMAIL                the Clerk "+clerk_test" test user
+#   variable  PRODUCTION_URL                      https://gfk.lol
+#
+# Production has no test account, and gfk.lol is public, so the production job
+# gets no secret at all and runs only the signed-out, read-only @smoke tests.
+#
+# Tracing is forced off. A trace records request headers and typed values, and
+# the artifacts of a public repository can be downloaded by anyone signed in.
+name: E2E
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    name: E2E (preview)
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Preview'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      E2E_BASE_URL: ${{ github.event.deployment_status.environment_url }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      E2E_CLERK_TEST_EMAIL: ${{ secrets.E2E_CLERK_TEST_EMAIL }}
+    steps:
+      - name: Check out the deployed commit
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install the browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Check the deployment can be reached
+        run: |
+          set -euo pipefail
+          result=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' \
+            -H "x-vercel-protection-bypass: ${VERCEL_AUTOMATION_BYPASS_SECRET}" \
+            "$E2E_BASE_URL")
+          status=${result%% *}
+          redirect=${result#* }
+          if [ "$status" = "401" ] || [[ "$redirect" == *"vercel.com/sso"* ]]; then
+            echo "::error::$E2E_BASE_URL answered with the host's login page. The repository secret VERCEL_AUTOMATION_BYPASS_SECRET is missing, wrong, or was regenerated after this deployment was built."
+            exit 1
+          fi
+          echo "Reached $E2E_BASE_URL (HTTP $status)."
+
+      - name: Run the whole suite
+        run: npx playwright test --trace off
+
+      - name: Keep screenshots and video when it fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-preview-${{ github.event.deployment.sha }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  production:
+    name: E2E (production)
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # One production run at a time, in order. A queued run is never cancelled.
+    concurrency:
+      group: e2e-production
+      cancel-in-progress: false
+    env:
+      # The production URL, not the deployment's own URL: logins and callbacks
+      # are bound to the real domain.
+      E2E_BASE_URL: ${{ vars.PRODUCTION_URL }}
+    steps:
+      - name: Check the production URL is set
+        run: |
+          if [ -z "$E2E_BASE_URL" ]; then
+            echo "::error::Repository variable PRODUCTION_URL is not set."
+            exit 1
+          fi
+
+      - name: Check out the deployed commit
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install the browser
+        run: npx playwright install --with-deps chromium
+
+      # No test carries @smoke: the run fails with "No tests found". That is
+      # deliberate. A production run that checks nothing must not pass.
+      - name: Run the smoke tests
+        run: npx playwright test --grep @smoke --trace off
+
+      - name: Keep screenshots and video when it fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-production-${{ github.event.deployment.sha }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
