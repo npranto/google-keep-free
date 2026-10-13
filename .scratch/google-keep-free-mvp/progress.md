@@ -33,7 +33,7 @@ tickets  ✅ 02.01 ─ ⚪ 02.02.01 ─ ⚪ 02.02.02 ─ ⚪ 02.02.03 ─ ⚪ 02
 - [x] review (approve with one note, fixed: NUL character)
 - [x] quality-check (14 stages, 11 run, 3 skipped, passed)
 - [x] save
-- [ ] pr
+- [x] pr (#44, v0.2.15)
 - [ ] release
 - [ ] verify (production)
 - [ ] observe
