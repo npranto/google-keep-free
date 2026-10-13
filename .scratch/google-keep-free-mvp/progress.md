@@ -8,11 +8,11 @@ tickets  🔵 02.01 ─ ⚪ 02.02 ─ ⚪ 02.03   0 of 3 shipped
 
 - [x] branch
 - [x] scope-check (pending design approval)
-- [ ] implement
-- [ ] verify (local)
-- [ ] understand
-- [ ] review
-- [ ] quality-check
+- [x] implement
+- [x] verify (local) 97, VERIFIED
+- [x] understand
+- [x] review (approve with nits, fixed)
+- [x] quality-check (14/14 passed)
 - [ ] save
 - [ ] pr
 - [ ] release (Production migration applied by the user first)
