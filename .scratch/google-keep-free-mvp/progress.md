@@ -1,16 +1,24 @@
-# Progress: catch up to the ns-* workflow rules (2026-10-12)
+# Progress: 02 Create and persist a Note (umbrella, split into 3)
 
-**Recipe:** onboard (catch-up) · **Mode:** guided · **Teach level:** deep (default)
+**Recipe:** ticket ([DELIVER]) x3 · **Mode:** guided · **Teach level:** deep
 
-Seven items, five PRs, in this order. Each ticket is a sub-ticket of 01.05.
+tickets  🔵 02.01 ─ ⚪ 02.02 ─ ⚪ 02.03   0 of 3 shipped
 
-| PR | Ticket | Lane | Items | State |
-|---|---|---|---|---|
-| A | 01.05.03 profile and decisions in tickets | Quick | 1, 2 | merged (#35) |
-| B1 | 01.05.04 local E2E and /try-out tests | Standard | 3, 4 | merged (#36) |
-| B2 | 01.05.05 E2E in CI on real deployments | Standard | 5 | merged (#37) |
-| B3 | 01.05.06 project verification skill | Standard | 7 | merged (#38) |
-| C | 01.05.07 versioning carries the bump | Standard | 6 | merged (#39) |
+## 02.01 Notes table and migration · Standard · branch feat/02.01-notes-table-and-migration
 
+- [x] branch
+- [x] scope-check (pending design approval)
+- [ ] implement
+- [ ] verify (local)
+- [ ] understand
+- [ ] review
+- [ ] quality-check
+- [ ] save
+- [ ] pr
+- [ ] release (Production migration applied by the user first)
+- [ ] verify (production)
+- [ ] observe
+- [ ] shipped
+- [ ] close
 
-All five are closed (Tue 13 Oct). Closing PR: docs: close 01.05.03 to 01.05.07.
+02.02 and 02.03 follow the same checklist, each on its own branch.

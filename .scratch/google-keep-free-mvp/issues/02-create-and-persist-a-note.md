@@ -1,8 +1,20 @@
 # 02: Create and persist a Note
 
-**Status:** ready-for-agent
+**Status:** in-progress (umbrella: split into 02.01 to 02.03 on 2026-10-13)
+**Lane:** each child carries its own
 **Classification:** SEQUENTIAL
 **Blocked by:** 01 (Application foundation)
+
+## Children
+
+Run in order. Each is its own PR.
+
+- [ ] 02.01 Notes table and migration
+- [ ] 02.02 createNote action and active Notes query
+- [ ] 02.03 Composer and Notes grid
+
+The umbrella is done when all three are closed and the acceptance criteria below hold
+end to end. Decisions live in the children.
 
 ## What to build
 
@@ -69,3 +81,5 @@ refresh page → Note still shows.
 hottest files starting here — every subsequent lifecycle ticket (03–08) touches at
 least one of them. This is why 02–08 are sequential, not a parallelization
 opportunity.
+
+## Comments
