@@ -31,7 +31,7 @@ tickets  ✅ 02.01 ─ ⚪ 02.02.01 ─ ⚪ 02.02.02 ─ ⚪ 02.02.03 ─ ⚪ 02
 - [x] verify (local) 28 tests, mutation-checked, VERIFIED
 - [x] understand
 - [x] review (approve with one note, fixed: NUL character)
-- [ ] quality-check
+- [x] quality-check (14 stages, 11 run, 3 skipped, passed)
 - [ ] save
 - [ ] pr
 - [ ] release
