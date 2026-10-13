@@ -4,25 +4,25 @@ import { BODY_MAX, TITLE_MAX, createNoteSchema } from "./validation";
 
 describe("createNoteSchema", () => {
   it("accepts a title of exactly the limit", () => {
-    const result = createNoteSchema.safeParse({ title: "a".repeat(TITLE_MAX) });
+    const result = createNoteSchema.safeParse({ title: "a".repeat(300) });
     expect(result.success).toBe(true);
   });
 
   it("rejects a title one over the limit", () => {
     const result = createNoteSchema.safeParse({
-      title: "a".repeat(TITLE_MAX + 1),
+      title: "a".repeat(301),
     });
     expect(result.success).toBe(false);
   });
 
   it("accepts a body of exactly the limit", () => {
-    const result = createNoteSchema.safeParse({ body: "a".repeat(BODY_MAX) });
+    const result = createNoteSchema.safeParse({ body: "a".repeat(20000) });
     expect(result.success).toBe(true);
   });
 
   it("rejects a body one over the limit", () => {
     const result = createNoteSchema.safeParse({
-      body: "a".repeat(BODY_MAX + 1),
+      body: "a".repeat(20001),
     });
     expect(result.success).toBe(false);
   });
