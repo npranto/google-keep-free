@@ -16,7 +16,7 @@ search, Clerk `UserButton`)") but no ticket currently implements.
 Found during 01.04's `/ns-to-review`: after 01.04 ships, a signed-in Owner
 has no UI path to sign out or see which account they're signed in as -
 `TopBar.tsx` only has the brand text and search. Neither 01.04 nor its
-parent umbrella ticket (01-application-foundation.md) scoped a `UserButton`
+parent umbrella ticket (✅01-application-foundation.md) scoped a `UserButton`
 in, and the product spec's 15 numbered acceptance criteria (`spec.md`) don't
 mention sign-out either - so ticket 16 (final integration) won't catch this
 gap on its own. This ticket exists to close it deliberately rather than
