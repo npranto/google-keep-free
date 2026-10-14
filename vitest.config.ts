@@ -8,6 +8,7 @@ export default defineConfig({
   },
   test: {
     // e2e/ runs under Playwright's own runner (npm run e2e), not Vitest.
-    exclude: ["**/node_modules/**", "**/e2e/**"],
+    // *.integration.test.ts needs a real database: npm run test:integration.
+    exclude: ["**/node_modules/**", "**/e2e/**", "**/*.integration.test.ts"],
   },
 });

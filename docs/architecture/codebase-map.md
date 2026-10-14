@@ -44,7 +44,8 @@ GitHub release on merge, at the version the PR wrote into `package.json`; the
 
 ## Commands
 
-`npm test` (vitest) · `npm run e2e` (Playwright) · `npm run typecheck` ·
+`npm test` (vitest) · `npm run test:integration` (vitest, real database) ·
+`npm run e2e` (Playwright) · `npm run typecheck` ·
 `npm run lint` · `npm run format:check` · `npm run db:check-connection` ·
 `npm run db:generate` · `npm run db:migrate`
 

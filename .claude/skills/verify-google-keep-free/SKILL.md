@@ -76,6 +76,10 @@ Names only, in `.env.local` (git-ignored), and every one is in `.env.example`:
 
 CI: `.github/workflows/e2e.yml` runs the whole suite on every preview deployment (`E2E (preview)`) and the `@smoke` tests on https://gfk.lol after every production deployment (`E2E (production)`). Tracing stays off.
 
+## Integration tests
+
+A rule with no screen (ownership, limits, a Server Action's insert) is proven by `npm run test:integration`: `*.integration.test.ts` files that run against the real database in `.env.local`, which local and Preview share. Production has its own database and is never touched. `npm test` leaves them out and CI does not run them yet. They use random test Owners and remove only their own rows. A mutation check that breaks the code can leak a row for a fixed id, so use random ids and count the `notes` rows afterward (expect 0).
+
 ## Evidence
 
 Into `.verification/<branch>/` (git-ignored): `playwright-cli screenshot --filename=.verification/<branch>/<name>.png`, the server log, and `playwright-cli console` output. Exercise the real user path, capture the action and the resulting state. There are no rows to check until the notes tickets ship.

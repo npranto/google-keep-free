@@ -428,8 +428,10 @@ Three layers, matching the architecture's own layers (per `system.md`):
   `lib/notes/state-machine.ts` (Active/Archived/Trashed + pinned-clearing
   transitions), with no I/O or mocking.
 - **Integration/server behavior**: Server Actions tested against a real
-  Postgres (local Docker for dev, GitHub Actions' Postgres service
-  container for CI) — no mocked Drizzle client, since ownership scoping and
+  Postgres, the Neon database in `DATABASE_URL`, run by
+  `npm run test:integration` (changed in 02.02.02: a plain Docker or CI
+  service-container Postgres cannot work, because the app uses the Neon HTTP
+  driver, and CI does not run the suite yet) — no mocked Drizzle client, since ownership scoping and
   version-conflict atomicity are exactly the SQL semantics a mock would
   have to reimplement. Must cover: ownership scoping (an Owner cannot read
   or mutate another Owner's rows), the version-conflict `updateNote` path
