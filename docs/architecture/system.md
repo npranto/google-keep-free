@@ -140,7 +140,9 @@ the real guarantee (server) — never client-only.
 Named query functions per view (`getActiveNotes()`, `getArchivedNotes()`,
 `getTrashedNotes()`, `getNotesForLabel(labelId)`), sharing a private
 `selectOwnedNotes()` helper that applies ownership scoping and the grid's sort order
-(`pinned desc, updatedAt desc`) once. Search uses its own query (`searchNotes()`,
+(`pinned desc, updatedAt desc, id desc`) once. The helper calls `getOwnerId()` itself,
+so no caller passes an Owner id, and the final `id` breaks ties so Notes with equal
+timestamps keep one order. Search uses its own query (`searchNotes()`,
 `ILIKE` on title/body across Active+Archived) since it has a genuinely different
 filter shape.
 
