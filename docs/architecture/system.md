@@ -235,11 +235,17 @@ Three layers, matching the architecture's own layers — no abstraction introduc
 solely for testability:
 
 1. **Pure functions** (`transition()`) — unit tested with no I/O.
-2. **Server Actions** — integration tested against a real Postgres (local Docker for
-   dev, GitHub Actions' built-in Postgres service container for CI — both free, no
-   mocked Drizzle client, since the behaviors worth testing, like ownership scoping
-   and version-conflict atomicity, are exactly the SQL semantics a mock would have to
-   faithfully reimplement).
+2. **Server Actions** — integration tested against a real Postgres, with no mocked
+   Drizzle client, since the behaviors worth testing, like ownership scoping and
+   version-conflict atomicity, are exactly the SQL semantics a mock would have to
+   faithfully reimplement. The files are `*.integration.test.ts`, run by
+   `npm run test:integration` against the Neon database in `DATABASE_URL` (from
+   `.env.local`; the same database serves local and Preview, Production has its own).
+   `npm test` leaves them out. Only identity (`getOwnerId`) and `next/cache` are
+   mocked, and each run uses random test Owners so it cannot touch a real user's
+   rows. CI does not run them yet. A plain Postgres container, such as a GitHub
+   Actions service container or local Docker, will not work: the app uses the Neon
+   HTTP driver (`drizzle-orm/neon-http`), so CI needs a Neon database or branch.
 3. **Playwright E2E** — the full core journey (sign in, create, edit/autosave, pin,
    archive, trash, search) against the running app.
 

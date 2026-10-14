@@ -47,17 +47,18 @@ Then open http://localhost:3000.
 
 Available scripts:
 
-| Script                 | Purpose                          |
-| ---------------------- | -------------------------------- |
-| `npm run dev`          | Start the development server     |
-| `npm run build`        | Create a production build        |
-| `npm run start`        | Serve the production build       |
-| `npm run lint`         | Run ESLint                       |
-| `npm run typecheck`    | Run the TypeScript compiler      |
-| `npm run format`       | Format code with Prettier        |
-| `npm run format:check` | Check formatting                 |
-| `npm test`             | Run unit tests (Vitest)          |
-| `npm run e2e`          | Run E2E smoke tests (Playwright) |
+| Script                     | Purpose                          |
+| -------------------------- | -------------------------------- |
+| `npm run dev`              | Start the development server     |
+| `npm run build`            | Create a production build        |
+| `npm run start`            | Serve the production build       |
+| `npm run lint`             | Run ESLint                       |
+| `npm run typecheck`        | Run the TypeScript compiler      |
+| `npm run format`           | Format code with Prettier        |
+| `npm run format:check`     | Check formatting                 |
+| `npm test`                 | Run unit tests (Vitest)          |
+| `npm run test:integration` | Run integration tests (real DB)  |
+| `npm run e2e`              | Run E2E smoke tests (Playwright) |
 
 Copy [`.env.example`](.env.example) to `.env.local` and fill it in: a Neon `DATABASE_URL` and the Clerk publishable and secret keys from your Clerk application. [`lib/env.ts`](lib/env.ts) validates them with Zod and fails fast on a missing or malformed value. Signed-out visitors to `/` are redirected to `/sign-in`.
 

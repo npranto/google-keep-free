@@ -41,3 +41,22 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ⚪ 02.02.02 ─ ⚪ 02.02.03 ─ ⚪ 02
 - [x] close
 
 Each remaining ticket follows the same checklist on its own branch.
+
+## 02.02.02 createNote action and integration harness · Standard · branch feat/02.02.02-create-note-action-and-integration-harness
+
+**Mode:** step · **Teach level:** deep
+
+- [x] branch
+- [x] scope-check (keep as one; separate env-driven integration config; flows.md fixed in this PR)
+- [x] implement (TDD, six slices, inline)
+- [x] verify (local) 96, VERIFIED, 7 of 7 mutation checks caught
+- [x] understand
+- [x] review (approve with nits, both should-fix fixed)
+- [x] quality-check (15 stages: 12 pass, 3 not applicable)
+- [ ] save
+- [ ] pr
+- [ ] release
+- [ ] verify (production)
+- [ ] observe
+- [ ] shipped
+- [ ] close

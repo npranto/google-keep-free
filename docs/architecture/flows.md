@@ -41,11 +41,11 @@ UI: owner navigates to "/" or "/?view=archive" or "/?view=trash" or "/?label=<id
 UI: owner clicks "New note", starts typing title/body
 → Client Component calls createNote() Server Action
 → lib/notes/actions.ts: createNote(input)
+  → validation.ts: createNoteSchema.safeParse(input) - a rejected input returns a validation error here, before getOwnerId() and the database
   → getOwnerId()
-  → validation.ts: createNoteSchema.parse(input)
-  → database: INSERT INTO notes (owner_id, title, body, state, ...) VALUES (...) RETURNING *
+  → database: INSERT INTO notes (owner_id, title, body, ...) VALUES (...) RETURNING id, version
 → revalidatePath("/")
-→ response: ActionResult<Note> { ok: true, data: note }
+→ response: ActionResult<{ id, version }> { ok: true, data: { id, version } }
 → UI: new note appears in the grid (optimistic insert via useOptimistic, confirmed on response)
 ```
 
