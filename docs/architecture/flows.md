@@ -28,9 +28,9 @@ every subsequent query and mutation.
 UI: owner navigates to "/" or "/?view=archive" or "/?view=trash" or "/?label=<id>"
 → app/(app)/page.tsx (Server Component) reads searchParams
 → lib/notes/queries.ts: getActiveNotes() / getArchivedNotes() / getTrashedNotes() / getNotesForLabel(id)
-  → getOwnerId() resolves owner from session
-  → selectOwnedNotes(ownerId, [state/label condition]) - Drizzle query
-→ database: SELECT ... WHERE owner_id = ? AND state = ? ORDER BY pinned DESC, updated_at DESC
+  → selectOwnedNotes([state/label condition]) - private Drizzle helper, no Owner argument:
+    it calls getOwnerId() itself to resolve the owner from the session
+→ database: SELECT ... WHERE owner_id = ? AND state = ? ORDER BY pinned DESC, updated_at DESC, id DESC
 → response: array of Note rows, rendered directly (Server Component, no client fetch)
 → UI: <NoteGrid notes={...} /> renders; loading.tsx shown during the navigation transition
 ```

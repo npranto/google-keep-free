@@ -60,3 +60,22 @@ Each remaining ticket follows the same checklist on its own branch.
 - [x] observe (healthy)
 - [x] shipped
 - [x] close
+
+## 02.02.03 getActiveNotes and owner-scoped queries · Standard · branch feat/02.02.03-active-notes-query
+
+**Mode:** step · **Teach level:** deep
+
+- [x] branch
+- [x] scope-check (nothing trimmed; EXPLAIN check and abuse cases carried forward)
+- [x] implement (TDD inline, 5 kept tests, EXPLAIN recorded in the ticket)
+- [x] verify (local) 100, VERIFIED, 7 of 7 mutation checks caught (before the review fixes; M5 and M6 re-run after)
+- [x] understand
+- [x] review (full: 3 reviewers + security-review; request changes, 2 should-fix and 4 nits fixed, 3 follow-ups recorded)
+- [x] quality-check (15 stages, all run, all pass or n/a; docs updated; `next` audit advisory found outside the ticket)
+- [x] save (2 commits: the code and tests, then the docs and ticket records)
+- [ ] pr
+- [ ] release
+- [ ] verify (production)
+- [ ] observe
+- [ ] shipped
+- [ ] close

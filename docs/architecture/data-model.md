@@ -24,7 +24,7 @@ Three tables. No local users table — every owned row carries an opaque Clerk u
 
 **Indexes**:
 - `(owner_id, state)` — covers the three grid views (Active/Archive/Trash) filtered per owner.
-- `(owner_id, updated_at)` — supports "most-recently-updated first" ordering.
+- `(owner_id, updated_at)` — narrows by owner and time. The grid order is `pinned desc, updated_at desc, id desc`, which this index cannot serve, so the grid is narrowed by `(owner_id, state)` and sorted in memory (EXPLAIN recorded in ticket 02.02.03).
 
 ## `labels`
 
