@@ -9,7 +9,7 @@ const envFile = fileURLToPath(new URL(".env.local", import.meta.url));
 if (existsSync(envFile)) process.loadEnvFile(envFile);
 
 // These tests write to a real database, so they run only through
-// `npm run test:integration`. vitest.config.ts leaves them out of `npm test`.
+// `npm run test:integration`. vitest.config.mts leaves them out of `npm test`.
 export default defineConfig({
   resolve: {
     alias: { "@": fileURLToPath(new URL(".", import.meta.url)) },
