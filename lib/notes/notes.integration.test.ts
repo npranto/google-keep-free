@@ -18,6 +18,7 @@ import { db } from "@/lib/db";
 import { notes } from "@/lib/db/schema";
 
 import { createNote } from "./actions";
+import { getActiveNotes } from "./queries";
 import { BODY_MAX, TITLE_MAX } from "./validation";
 
 // Fresh Owners per run, so these rows can never mix with a real user's, a row
@@ -105,5 +106,101 @@ describe("createNote", () => {
     await createNote({ title: "", body: "" });
 
     expect(revalidatePathMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("getActiveNotes", () => {
+  const seed = (values: typeof notes.$inferInsert) =>
+    db.insert(notes).values(values);
+
+  it("returns only the caller's Notes, whichever Owner is signed in", async () => {
+    await seed({ ownerId: testOwner, title: "mine" });
+    await seed({ ownerId: otherOwner, title: "theirs" });
+
+    const mine = await getActiveNotes();
+    expect(mine.map((n) => n.title)).toEqual(["mine"]);
+
+    getOwnerIdMock.mockResolvedValue(otherOwner);
+    const theirs = await getActiveNotes();
+    expect(theirs.map((n) => n.title)).toEqual(["theirs"]);
+  });
+
+  it("leaves out archived and trashed Notes", async () => {
+    await seed({ ownerId: testOwner, title: "active", state: "active" });
+    await seed({ ownerId: testOwner, title: "archived", state: "archived" });
+    await seed({ ownerId: testOwner, title: "trashed", state: "trashed" });
+
+    const active = await getActiveNotes();
+    expect(active.map((n) => n.title)).toEqual(["active"]);
+  });
+
+  it("lists pinned Notes first, then most recently updated first", async () => {
+    // Inserted in neither the expected order nor its reverse, and an old
+    // pinned Note must still outrank a newer unpinned one.
+    await seed({
+      ownerId: testOwner,
+      title: "unpinned old",
+      updatedAt: new Date("2026-02-01"),
+    });
+    await seed({
+      ownerId: testOwner,
+      title: "pinned old",
+      pinned: true,
+      updatedAt: new Date("2026-01-01"),
+    });
+    await seed({
+      ownerId: testOwner,
+      title: "unpinned new",
+      updatedAt: new Date("2026-04-01"),
+    });
+    await seed({
+      ownerId: testOwner,
+      title: "pinned new",
+      pinned: true,
+      updatedAt: new Date("2026-03-01"),
+    });
+
+    const active = await getActiveNotes();
+    expect(active.map((n) => n.title)).toEqual([
+      "pinned new",
+      "pinned old",
+      "unpinned new",
+      "unpinned old",
+    ]);
+  });
+
+  it("keeps a stable order for Notes with the same pin and update time", async () => {
+    // uuid compares bytewise, which matches sorting the canonical hex strings.
+    const [lowId, highId] = [randomUUID(), randomUUID()].sort();
+    const updatedAt = new Date("2026-05-01");
+    await seed({ ownerId: testOwner, id: lowId, title: "low id", updatedAt });
+    await seed({ ownerId: testOwner, id: highId, title: "high id", updatedAt });
+
+    const active = await getActiveNotes();
+    expect(active.map((n) => n.title)).toEqual(["high id", "low id"]);
+  });
+
+  it("runs no query when there is no session", async () => {
+    getOwnerIdMock.mockRejectedValue(new Error("NEXT_REDIRECT"));
+    const selectSpy = vi.spyOn(db, "select");
+
+    try {
+      await expect(getActiveNotes()).rejects.toThrow("NEXT_REDIRECT");
+      expect(selectSpy).not.toHaveBeenCalled();
+    } finally {
+      selectSpy.mockRestore();
+    }
+  });
+
+  it("takes no Owner id", () => {
+    // The Owner always comes from the session (ADR 0002), so a caller has no
+    // argument through which to pass one. `npm run typecheck` fails here if
+    // getActiveNotes gains a parameter. Add a line like this for each new
+    // query that must not take an Owner id (a label id is fine).
+    // @ts-expect-error getActiveNotes accepts no arguments
+    const callWithOwner = () => getActiveNotes(testOwner);
+
+    expect(callWithOwner).toBeTypeOf("function");
+    expect(getActiveNotes).toHaveLength(0);
   });
 });
