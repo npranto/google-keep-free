@@ -10,7 +10,7 @@
 Run in order. Each is its own PR.
 
 - [x] 02.01 Notes table and migration (PR #41, v0.2.12)
-- [ ] 02.02 createNote action and active Notes query (umbrella: 02.02.01 to 02.02.03)
+- [x] 02.02 createNote action and active Notes query (umbrella: 02.02.01 to 02.02.03, PRs #44, #46, #51)
 - [ ] 02.03 Composer and Notes grid
 
 The umbrella is done when all three are closed and the acceptance criteria below hold

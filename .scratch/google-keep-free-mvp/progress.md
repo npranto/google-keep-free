@@ -2,7 +2,7 @@
 
 **Recipe:** ticket ([DELIVER]) x3 · **Mode:** guided · **Teach level:** deep
 
-tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ⚪ 02.02.03 ─ ⚪ 02.03   3 of 5 shipped
+tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ⚪ 02.03   4 of 5 shipped
 
 ## 02.01 Notes table and migration · Standard · branch feat/02.01-notes-table-and-migration
 
@@ -73,9 +73,9 @@ Each remaining ticket follows the same checklist on its own branch.
 - [x] review (full: 3 reviewers + security-review; request changes, 2 should-fix and 4 nits fixed, 3 follow-ups recorded)
 - [x] quality-check (15 stages, all run, all pass or n/a; docs updated; `next` audit advisory found outside the ticket)
 - [x] save (2 commits: the code and tests, then the docs and ticket records)
-- [ ] pr
-- [ ] release
-- [ ] verify (production)
-- [ ] observe
-- [ ] shipped
-- [ ] close
+- [x] pr (#51, v0.2.22, preview smoke pass, E2E 9 of 9, 5 of 5 required checks green)
+- [x] release (merged 157ce18, v0.2.22)
+- [x] verify (production) smoke pass, E2E 7 of 7
+- [x] observe (healthy, low tier: 0 errors and 0 5xx in 24 requests, console clean on the public pages)
+- [x] shipped
+- [x] close (CLOSED; `server-only` guard accepted as a risk; next is 02.03)
