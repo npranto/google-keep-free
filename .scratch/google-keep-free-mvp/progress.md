@@ -2,7 +2,7 @@
 
 **Recipe:** ticket ([DELIVER]) x3 · **Mode:** guided · **Teach level:** deep
 
-tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ⚪ 02.02.02 ─ ⚪ 02.02.03 ─ ⚪ 02.03   2 of 5 shipped
+tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ⚪ 02.02.03 ─ ⚪ 02.03   3 of 5 shipped
 
 ## 02.01 Notes table and migration · Standard · branch feat/02.01-notes-table-and-migration
 
@@ -53,10 +53,10 @@ Each remaining ticket follows the same checklist on its own branch.
 - [x] understand
 - [x] review (approve with nits, both should-fix fixed)
 - [x] quality-check (15 stages: 12 pass, 3 not applicable)
-- [ ] save
-- [ ] pr
-- [ ] release
-- [ ] verify (production)
-- [ ] observe
-- [ ] shipped
-- [ ] close
+- [x] save
+- [x] pr (#46, v0.2.17)
+- [x] release (merged a8843d8, v0.2.17)
+- [x] verify (production) smoke pass
+- [x] observe (healthy)
+- [x] shipped
+- [x] close

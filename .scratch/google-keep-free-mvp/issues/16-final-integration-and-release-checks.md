@@ -62,3 +62,17 @@ spec's 15 acceptance criteria live against the deployed preview.
 None structurally (nothing else depends on it), but it's the ticket most likely
 to surface anything earlier tickets under-scoped — expect small fix-up churn
 here, not new features.
+
+## Comments
+
+- 2026-10-14 (from 02.02.02): "green in CI" for the integration tests is not wired yet.
+  `npm run test:integration` (vitest, `*.integration.test.ts`) runs only locally against
+  the `.env.local` Neon database, shared by local and Preview. The Healthcheck `test` job
+  runs `npm test`, which leaves them out. The config takes the database from the
+  environment (`.env.local` only when it exists, a set `DATABASE_URL` wins), so a CI job
+  needs only a `DATABASE_URL` secret and no config change. A plain Postgres container,
+  which `system.md` used to suggest, cannot work: the app uses `drizzle-orm/neon-http`.
+  The likely route is a throwaway Neon branch per run, so the suite never writes to the
+  live database. A GitHub Actions secret named `DATABASE_URL` exists, is unused, and its
+  target could not be checked. Each test run uses random test Owners and removes only its
+  own rows.
