@@ -31,8 +31,11 @@ UI: owner navigates to "/" or "/?view=archive" or "/?view=trash" or "/?label=<id
   → selectOwnedNotes([state/label condition]) - private Drizzle helper, no Owner argument:
     it calls getOwnerId() itself to resolve the owner from the session
 → database: SELECT ... WHERE owner_id = ? AND state = ? ORDER BY pinned DESC, updated_at DESC, id DESC
-→ response: array of Note rows, rendered directly (Server Component, no client fetch)
-→ UI: <NoteGrid notes={...} /> renders; loading.tsx shown during the navigation transition
+→ response: array of Note rows, mapped with toNoteCard() (lib/notes/card.ts) to the card shape
+  { id, title, preview, color, pinned }: the preview is capped, so the full body and the
+  Owner id never reach the grid (Server Component, no client fetch)
+→ UI: <NoteGrid notes={...} /> renders (<EmptyState /> when the list is empty);
+  loading.tsx shown during the navigation transition
 ```
 
 ## Create note
