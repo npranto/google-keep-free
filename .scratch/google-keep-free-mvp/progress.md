@@ -1,8 +1,32 @@
-# Progress: 02 Create and persist a Note (umbrella, split into 02.01, 02.02.01-03, 02.03)
+# Progress: 02 Create and persist a Note (umbrella, split into 02.01, 02.02.01-03, 02.03.01-02)
 
 **Recipe:** ticket ([DELIVER]) x3 · **Mode:** guided · **Teach level:** deep
 
-tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ⚪ 02.03   4 of 5 shipped
+tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ⚪ 02.03.01 ─ ⚪ 02.03.02   4 of 6 shipped
+
+02.03 was split into 02.03.01 (grid) and 02.03.02 (composer) on 2026-10-14. Planning phases
+(discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
+went straight to the ticket loop.
+
+## 02.03.01 Notes grid · Standard · branch feat/02.03.01-notes-grid
+
+**Mode:** step
+
+- [x] split-ticket (02.03 split in two, user's choice)
+- [x] branch
+- [x] scope-check (design A, mapper in `lib/notes/card.ts`; `color` and `pinned` kept; Production read carried as a release check)
+- [x] implement (TDD inline, 6 kept unit tests, shell E2E now accepts grid or empty state)
+- [x] verify (local) watched, VERIFIED; Lighthouse and mobile not run
+- [x] understand
+- [x] review (main session, approve with nits; N1 and N2 fixed, N3 left)
+- [x] quality-check (15 stages: 14 pass, 1 n/a; docs updated)
+- [x] save (2 commits: the code and tests, then the docs and ticket records)
+- [ ] pr
+- [ ] release
+- [ ] verify (production)
+- [ ] observe
+- [ ] shipped
+- [ ] close
 
 ## 02.01 Notes table and migration · Standard · branch feat/02.01-notes-table-and-migration
 

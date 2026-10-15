@@ -44,6 +44,7 @@ lib/
     queries.ts             # getActiveNotes, getArchivedNotes, getTrashedNotes, getNotesForLabel
     actions.ts               # createNote, updateNote, pinNote, archiveNote, trashNote,
                               # restoreNote, permanentlyDeleteNote
+    card.ts                     # toNoteCard(): row -> card shape, capped preview, no body or owner id
     state-machine.ts          # pure transition() function - no DB, no I/O
     validation.ts               # Zod schemas for note input
   labels/
