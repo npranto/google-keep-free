@@ -2,7 +2,7 @@
 
 **Recipe:** ticket ([DELIVER]) x3 · **Mode:** guided · **Teach level:** deep
 
-tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ⚪ 02.03.01 ─ ⚪ 02.03.02   4 of 6 shipped
+tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02.03.01 ─ ⚪ 02.03.02   5 of 6 shipped
 
 02.03 was split into 02.03.01 (grid) and 02.03.02 (composer) on 2026-10-14. Planning phases
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
@@ -21,12 +21,13 @@ went straight to the ticket loop.
 - [x] review (main session, approve with nits; N1 and N2 fixed, N3 left)
 - [x] quality-check (15 stages: 14 pass, 1 n/a; docs updated)
 - [x] save (2 commits: the code and tests, then the docs and ticket records)
-- [ ] pr
-- [ ] release
-- [ ] verify (production)
-- [ ] observe
-- [ ] shipped
-- [ ] close
+- [x] pr (#53, v0.2.24; the first push failed CI `build`, fixed in `94f4d03`; preview 96, CI 7 of 7, E2E 9 of 9)
+- [x] release (merged `e154e97` at 01:22 EDT)
+- [x] verify (production) PARTIAL: smoke E2E 7 of 7, signed-out pages clean, the signed-in grid not run (no test account)
+- [x] incident: the Production `DATABASE_URL` was rejected by Neon, so signed-in `/` failed for about 12 minutes; rolled back to v0.2.23 at 01:35, credential replaced, `e154e97` redeployed at 01:44 (`docs/incidents/0001-production-database-credential-rejected.md`)
+- [x] observe (healthy, medium tier: 0 errors and 0 5xx in 34 requests since 01:44)
+- [x] shipped
+- [x] close (CLOSED; Production criteria gap accepted; follow-ups 01.05.08, 01.05.09, 01.05.10, 02.03.03; next is 02.03.02)
 
 ## 02.01 Notes table and migration · Standard · branch feat/02.01-notes-table-and-migration
 
