@@ -67,7 +67,7 @@ The mechanism: the Production `DATABASE_URL` stored in Vercel (created about 6 d
 |---|---|---|---|
 | 1 | Replace the Production `DATABASE_URL` and redeploy | @npranto | done 2026-10-15 01:44 |
 | 2 | Find out why Neon rejected the old credential, and note how to rotate it safely | @npranto | `01.05.10-production-database-credential-cause.md` |
-| 3 | Add a database check that works on Production without a test account, and run it in the production smoke tests | agent, owner reviews | `01.05.08-production-database-health-check.md` |
+| 3 | Add a database check that works on Production without a test account. Done as a `prebuild` check that stops a build whose `DATABASE_URL` Neon rejects (v0.2.26, PR #55), not as a production smoke test | agent, owner reviews | `✅01.05.08-production-database-health-check.md` |
 | 4 | Fix the Rollback workflow's instant path (`User not found`, 404) | agent, owner reviews | `01.05.09-rollback-instant-path-404.md` |
 
 ## Related
