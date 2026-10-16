@@ -17,21 +17,21 @@ The release that added the Notes grid (02.03.01) made the signed-in home page re
 
 ## Timeline
 
-| Time | Event |
-|---|---|
-| 01:22:45 | PR #53 squash-merged as `e154e97`. CI had been green on the PR head. |
-| 01:23:13 | Production deployment `7084605745` created from `e154e97`. |
-| 01:24:17 | Production smoke E2E passes 7 of 7. It is signed out, so it does not read the database. |
-| 01:26:25 | First failed signed-in `GET /` in the retained logs (earliest of the 5 lines kept). Further failures at 01:26:33, 01:26:46, 01:28:07 (twice). Last failure 01:28:07. |
-| About 01:28 to 01:31 | Detection: the owner loaded `https://gfk.lol` signed in, as asked at the release hand-off, and reported the error page. The report time was not recorded. |
-| After detection | Logs read with `vercel logs --level error`. Cause visible in one read: `NeonDbError: password authentication failed for user 'neondb_owner'`. Mitigation decision put to the owner with three options. |
-| 01:34:15 | Rollback workflow started with an empty version, on the owner's go-ahead. |
-| 01:34:43 | Its instant-rollback step failed with `User not found. (404)`. The workflow fell through to its rebuild-from-tag path. |
-| 01:35:12 | Rollback deployment `dpl_7uB4L3DGYHKRzfJTuxZ2LkWWaC7A` (`c3c7422`, v0.2.23) created and promoted. Signed-in service restored. |
-| 01:38 | Logs show no errors on the rollback deployment. |
-| Between 01:38 and 01:44, not recorded | Owner updated the Production `DATABASE_URL` in Vercel. |
-| 01:44:28 | Owner redeployed `e154e97` as `dpl_GS93Tto11qRBCiHWXwoZPkmhcrCS` and promoted it. Smoke E2E passes at 01:44:50. |
-| About 01:48 | Owner confirmed the signed-in empty state loads. Log scan: 0 errors in 34 requests. Verdict HEALTHY. |
+| Time                                  | Event                                                                                                                                                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 01:22:45                              | PR #53 squash-merged as `e154e97`. CI had been green on the PR head.                                                                                                                                   |
+| 01:23:13                              | Production deployment `7084605745` created from `e154e97`.                                                                                                                                             |
+| 01:24:17                              | Production smoke E2E passes 7 of 7. It is signed out, so it does not read the database.                                                                                                                |
+| 01:26:25                              | First failed signed-in `GET /` in the retained logs (earliest of the 5 lines kept). Further failures at 01:26:33, 01:26:46, 01:28:07 (twice). Last failure 01:28:07.                                   |
+| About 01:28 to 01:31                  | Detection: the owner loaded `https://gfk.lol` signed in, as asked at the release hand-off, and reported the error page. The report time was not recorded.                                              |
+| After detection                       | Logs read with `vercel logs --level error`. Cause visible in one read: `NeonDbError: password authentication failed for user 'neondb_owner'`. Mitigation decision put to the owner with three options. |
+| 01:34:15                              | Rollback workflow started with an empty version, on the owner's go-ahead.                                                                                                                              |
+| 01:34:43                              | Its instant-rollback step failed with `User not found. (404)`. The workflow fell through to its rebuild-from-tag path.                                                                                 |
+| 01:35:12                              | Rollback deployment `dpl_7uB4L3DGYHKRzfJTuxZ2LkWWaC7A` (`c3c7422`, v0.2.23) created and promoted. Signed-in service restored.                                                                          |
+| 01:38                                 | Logs show no errors on the rollback deployment.                                                                                                                                                        |
+| Between 01:38 and 01:44, not recorded | Owner updated the Production `DATABASE_URL` in Vercel.                                                                                                                                                 |
+| 01:44:28                              | Owner redeployed `e154e97` as `dpl_GS93Tto11qRBCiHWXwoZPkmhcrCS` and promoted it. Smoke E2E passes at 01:44:50.                                                                                        |
+| About 01:48                           | Owner confirmed the signed-in empty state loads. Log scan: 0 errors in 34 requests. Verdict HEALTHY.                                                                                                   |
 
 ## Root cause
 
@@ -40,6 +40,7 @@ The mechanism: the Production `DATABASE_URL` stored in Vercel (created about 6 d
 **Why the credential is rejected is not known.** It was not investigated, and the value is a sensitive variable that cannot be read back. Candidates: a Neon password reset after the variable was set, or a stale or mistyped value from the setup. The owner applied the Production migration on 2026-10-13 from a terminal with their own connection string, which does not exercise the Vercel variable.
 
 **The missing safeguard** is what let it reach users: nothing in the pipeline ever uses the Production database credential before or after a deploy.
+
 - No page read the database until this release.
 - The production smoke tests are signed out and never touch the database.
 - Production has no signed-in test account, because Clerk's production instance does not accept the test sign-in.
@@ -63,12 +64,12 @@ The mechanism: the Production `DATABASE_URL` stored in Vercel (created about 6 d
 
 ## Action items
 
-| # | Action | Owner | Ticket |
-|---|---|---|---|
-| 1 | Replace the Production `DATABASE_URL` and redeploy | @npranto | done 2026-10-15 01:44 |
-| 2 | Find out why Neon rejected the old credential, and note how to rotate it safely | @npranto | `01.05.10-production-database-credential-cause.md` |
-| 3 | Add a database check that works on Production without a test account. Done as a `prebuild` check that stops a build whose `DATABASE_URL` Neon rejects (v0.2.26, PR #55), not as a production smoke test | agent, owner reviews | `✅01.05.08-production-database-health-check.md` |
-| 4 | Fix the Rollback workflow's instant path (`User not found`, 404) | agent, owner reviews | `01.05.09-rollback-instant-path-404.md` |
+| #   | Action                                                                                                                                                                                                  | Owner                | Ticket                                             |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------------------------------------------------- |
+| 1   | Replace the Production `DATABASE_URL` and redeploy                                                                                                                                                      | @npranto             | done 2026-10-15 01:44                              |
+| 2   | Find out why Neon rejected the old credential, and note how to rotate it safely                                                                                                                         | @npranto             | `01.05.10-production-database-credential-cause.md` |
+| 3   | Add a database check that works on Production without a test account. Done as a `prebuild` check that stops a build whose `DATABASE_URL` Neon rejects (v0.2.26, PR #55), not as a production smoke test | agent, owner reviews | `✅01.05.08-production-database-health-check.md`   |
+| 4   | Fix the Rollback workflow's instant path (`User not found`, 404)                                                                                                                                        | agent, owner reviews | `01.05.09-rollback-instant-path-404.md`            |
 
 ## Related
 

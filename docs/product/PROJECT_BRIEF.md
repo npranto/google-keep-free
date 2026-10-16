@@ -84,6 +84,7 @@ at the repo root; hard-to-reverse architectural choices are recorded as ADRs
 in [`docs/adr/`](../adr/). The rest are recorded here.
 
 **Stack, hosting, and auth** (see ADRs):
+
 - One full-stack TypeScript app: Next.js (App Router, React), Postgres via
   Drizzle ORM, deployed on Vercel with Neon as the managed Postgres host.
   See [ADR 0001](../adr/0001-single-full-stack-nextjs-app-on-vercel-and-neon.md).

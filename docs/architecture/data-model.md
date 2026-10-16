@@ -8,34 +8,36 @@ Three tables. No local users table — every owned row carries an opaque Clerk u
 
 ## `notes`
 
-| Column | Type | Notes |
-|---|---|---|
-| `id` | `uuid` primary key, `default random()` | |
-| `owner_id` | `text`, not null | Clerk user ID. Every query/mutation filters on this. |
-| `title` | `varchar(300)`, not null, default `''` | Server-enforced cap; backstops Zod validation. |
-| `body` | `varchar(20000)`, not null, default `''` | Server-enforced cap; backstops Zod validation. |
-| `state` | `note_state` enum, not null, default `'active'` | One of `active` / `archived` / `trashed`. See State representation below. |
-| `color` | `note_color` enum, not null, default `'default'` | Fixed palette of 11 named tokens, not raw hex: `default`, `coral`, `peach`, `sand`, `sage`, `fog`, `storm`, `dusk`, `blossom`, `clay`, `chalk` (names fixed in `ui-spec.md` section 19; the shades live in CSS). Postgres cannot remove an enum value, so tokens are only added or renamed. |
-| `pinned` | `boolean`, not null, default `false` | Only meaningful when `state = 'active'`; cleared on any transition away from Active. |
-| `version` | `integer`, not null, default `1` | Optimistic concurrency. Incremented on every successful `updateNote`. |
-| `created_at` | `timestamptz`, not null, default `now()` | |
-| `updated_at` | `timestamptz`, not null, default `now()` | Drives grid sort order. |
-| `trashed_at` | `timestamptz`, nullable | Set when `state` becomes `trashed`; cleared on restore. Null otherwise. Stored from day one so a future auto-purge job needs no migration. |
+| Column       | Type                                             | Notes                                                                                                                                                                                                                                                                                       |
+| ------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | `uuid` primary key, `default random()`           |                                                                                                                                                                                                                                                                                             |
+| `owner_id`   | `text`, not null                                 | Clerk user ID. Every query/mutation filters on this.                                                                                                                                                                                                                                        |
+| `title`      | `varchar(300)`, not null, default `''`           | Server-enforced cap; backstops Zod validation.                                                                                                                                                                                                                                              |
+| `body`       | `varchar(20000)`, not null, default `''`         | Server-enforced cap; backstops Zod validation.                                                                                                                                                                                                                                              |
+| `state`      | `note_state` enum, not null, default `'active'`  | One of `active` / `archived` / `trashed`. See State representation below.                                                                                                                                                                                                                   |
+| `color`      | `note_color` enum, not null, default `'default'` | Fixed palette of 11 named tokens, not raw hex: `default`, `coral`, `peach`, `sand`, `sage`, `fog`, `storm`, `dusk`, `blossom`, `clay`, `chalk` (names fixed in `ui-spec.md` section 19; the shades live in CSS). Postgres cannot remove an enum value, so tokens are only added or renamed. |
+| `pinned`     | `boolean`, not null, default `false`             | Only meaningful when `state = 'active'`; cleared on any transition away from Active.                                                                                                                                                                                                        |
+| `version`    | `integer`, not null, default `1`                 | Optimistic concurrency. Incremented on every successful `updateNote`.                                                                                                                                                                                                                       |
+| `created_at` | `timestamptz`, not null, default `now()`         |                                                                                                                                                                                                                                                                                             |
+| `updated_at` | `timestamptz`, not null, default `now()`         | Drives grid sort order.                                                                                                                                                                                                                                                                     |
+| `trashed_at` | `timestamptz`, nullable                          | Set when `state` becomes `trashed`; cleared on restore. Null otherwise. Stored from day one so a future auto-purge job needs no migration.                                                                                                                                                  |
 
 **Indexes**:
+
 - `(owner_id, state)` — covers the three grid views (Active/Archive/Trash) filtered per owner.
 - `(owner_id, updated_at)` — narrows by owner and time. The grid order is `pinned desc, updated_at desc, id desc`, which this index cannot serve, so the grid is narrowed by `(owner_id, state)` and sorted in memory (EXPLAIN recorded in ticket 02.02.03).
 
 ## `labels`
 
-| Column | Type | Notes |
-|---|---|---|
-| `id` | `uuid` primary key, `default random()` | |
-| `owner_id` | `text`, not null | |
-| `name` | `varchar(100)`, not null | Display casing preserved as typed. |
-| `created_at` | `timestamptz`, not null, default `now()` | |
+| Column       | Type                                     | Notes                              |
+| ------------ | ---------------------------------------- | ---------------------------------- |
+| `id`         | `uuid` primary key, `default random()`   |                                    |
+| `owner_id`   | `text`, not null                         |                                    |
+| `name`       | `varchar(100)`, not null                 | Display casing preserved as typed. |
+| `created_at` | `timestamptz`, not null, default `now()` |                                    |
 
 **Constraints**:
+
 - Unique functional index on `(owner_id, lower(name))` — enforces "names unique per
   owner, case-insensitive" at the database level (closes the race a check-then-insert
   in application code alone can't close), while `name` itself keeps the original
@@ -43,12 +45,13 @@ Three tables. No local users table — every owned row carries an opaque Clerk u
 
 ## `note_labels` (join table)
 
-| Column | Type | Notes |
-|---|---|---|
-| `note_id` | `uuid`, not null, `references notes(id) on delete cascade` | |
-| `label_id` | `uuid`, not null, `references labels(id) on delete cascade` | |
+| Column     | Type                                                        | Notes |
+| ---------- | ----------------------------------------------------------- | ----- |
+| `note_id`  | `uuid`, not null, `references notes(id) on delete cascade`  |       |
+| `label_id` | `uuid`, not null, `references labels(id) on delete cascade` |       |
 
 **Constraints**:
+
 - Composite primary key `(note_id, label_id)` — prevents duplicate assignment of the
   same label to the same note; no separate surrogate `id` needed since nothing else
   references rows in this table.
@@ -58,6 +61,7 @@ Three tables. No local users table — every owned row carries an opaque Clerk u
   never touches `notes` itself.
 
 **Indexes**:
+
 - `(label_id)` — supports the label-view query ("notes with this label"). The
   primary key's leading column already covers "labels for this note" lookups.
 
