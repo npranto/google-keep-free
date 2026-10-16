@@ -1,3 +1,4 @@
+import { Composer } from "@/components/notes/Composer";
 import { EmptyState } from "@/components/notes/EmptyState";
 import { NoteGrid } from "@/components/notes/NoteGrid";
 import { toNoteCard } from "@/lib/notes/card";
@@ -9,6 +10,10 @@ export default async function HomePage() {
   // what the grid receives.
   const cards = (await getActiveNotes()).map(toNoteCard);
 
-  if (cards.length === 0) return <EmptyState />;
-  return <NoteGrid notes={cards} />;
+  return (
+    <>
+      <Composer />
+      {cards.length === 0 ? <EmptyState /> : <NoteGrid notes={cards} />}
+    </>
+  );
 }

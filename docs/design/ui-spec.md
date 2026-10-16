@@ -56,11 +56,11 @@ visually highlighted and matches the current `?view=`/`?label=` param.
 
 **Responsive states**:
 
-| Breakpoint | Sidebar state |
-|---|---|
-| Desktop (`>=1024px`) | Always expanded, fixed width (~256px), no toggle |
+| Breakpoint             | Sidebar state                                                                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Desktop (`>=1024px`)   | Always expanded, fixed width (~256px), no toggle                                                                                                  |
 | Tablet (`~768-1023px`) | Icon-only rail (~64px) by default; toggle expands it as a temporary overlay on top of content, which auto-collapses back to the rail on selection |
-| Mobile (`<768px`) | Hidden by default; toggle opens it as a full-height overlay drawer (scrim-dismissible, closes on Escape) |
+| Mobile (`<768px`)      | Hidden by default; toggle opens it as a full-height overlay drawer (scrim-dismissible, closes on Escape)                                          |
 
 Sidebar expand/collapse state is ephemeral - not persisted across sessions;
 always starts from the breakpoint's default on load.
@@ -69,12 +69,12 @@ always starts from the breakpoint's default on load.
 
 One route (`/`), four view modes, distinguished by search params:
 
-| View | Param | Composer shown? | Pin grouping? | Card toolbar |
-|---|---|---|---|---|
-| Notes (Active) | (none) | Yes | Yes | pin, color, labels, archive, trash |
-| Archive | `?view=archive` | No | No | color, labels, restore, trash |
-| Trash | `?view=trash` | No | No | restore, delete forever only (read-only card) |
-| Label | `?label=<id>` | Yes (does not auto-tag) | Yes | pin, color, labels, archive, trash |
+| View           | Param           | Composer shown?         | Pin grouping? | Card toolbar                                  |
+| -------------- | --------------- | ----------------------- | ------------- | --------------------------------------------- |
+| Notes (Active) | (none)          | Yes                     | Yes           | pin, color, labels, archive, trash            |
+| Archive        | `?view=archive` | No                      | No            | color, labels, restore, trash                 |
+| Trash          | `?view=trash`   | No                      | No            | restore, delete forever only (read-only card) |
+| Label          | `?label=<id>`   | Yes (does not auto-tag) | Yes           | pin, color, labels, archive, trash            |
 
 Search is not a view/route - it's a client-side debounced overlay that
 replaces the grid content in place (Section 9) while leaving the underlying
@@ -223,14 +223,14 @@ are irreversible. Clicking a card opens the read-only editor variant
 
 ## 12. Responsive behavior
 
-| Concern | Desktop (>=1024px) | Tablet (~768-1023px) | Mobile (<768px) |
-|---|---|---|---|
-| Sidebar | Always expanded | Icon rail, expandable overlay | Hidden, overlay drawer |
-| Grid columns | 4 | 2-3 | 1 (single column, per brief) |
-| Grid layout | CSS multi-column masonry | Same | Same (1 column = no visual masonry effect) |
-| Search field | Persistent, always visible | Persistent, always visible | Icon that expands to full-width field |
-| Note editor | Centered `Dialog` | Centered `Dialog` | Full-screen `Dialog`, back-arrow close |
-| Card toolbar | Hover/focus-revealed | Always visible (touch) | Always visible (touch) |
+| Concern      | Desktop (>=1024px)         | Tablet (~768-1023px)          | Mobile (<768px)                            |
+| ------------ | -------------------------- | ----------------------------- | ------------------------------------------ |
+| Sidebar      | Always expanded            | Icon rail, expandable overlay | Hidden, overlay drawer                     |
+| Grid columns | 4                          | 2-3                           | 1 (single column, per brief)               |
+| Grid layout  | CSS multi-column masonry   | Same                          | Same (1 column = no visual masonry effect) |
+| Search field | Persistent, always visible | Persistent, always visible    | Icon that expands to full-width field      |
+| Note editor  | Centered `Dialog`          | Centered `Dialog`             | Full-screen `Dialog`, back-arrow close     |
+| Card toolbar | Hover/focus-revealed       | Always visible (touch)        | Always visible (touch)                     |
 
 Grid layout uses pure CSS (`column-count` + `break-inside: avoid`), not a JS
 masonry library - zero extra dependencies, at the cost of column-major (not
@@ -254,13 +254,13 @@ strictly row-major) visual fill order.
 One shared `EmptyState` component (muted icon + short message, no custom
 illustration artwork), reused with per-view copy:
 
-| View | Copy |
-|---|---|
-| Notes (no notes) | "Notes you add appear here" (composer still shown above it) |
-| Archive | "Your archived notes appear here." |
-| Trash | "No notes in Trash." ("Empty trash" disabled) |
-| Label (no Active notes) | "No notes with this label yet." |
-| Search (no matches) | "No notes match '<query>'" + "Try different words." |
+| View                    | Copy                                                        |
+| ----------------------- | ----------------------------------------------------------- |
+| Notes (no notes)        | "Notes you add appear here" (composer still shown above it) |
+| Archive                 | "Your archived notes appear here."                          |
+| Trash                   | "No notes in Trash." ("Empty trash" disabled)               |
+| Label (no Active notes) | "No notes with this label yet."                             |
+| Search (no matches)     | "No notes match '<query>'" + "Try different words."         |
 
 ## 15. Error states
 
@@ -278,18 +278,19 @@ illustration artwork), reused with per-view copy:
   a shared `AlertDialog` (Radix/shadcn `alert-dialog`), applied only to
   irreversible actions:
 
-  | Action | Confirm? |
-  |---|---|
-  | Active/Archived -> Trash | No (reversible via Restore) |
-  | Archive | No (reversible) |
-  | Restore | No (reversible, low-stakes) |
-  | Delete forever (single note) | **Yes** |
-  | Empty trash | **Yes** |
-  | Delete label | **Yes** |
+  | Action                       | Confirm?                    |
+  | ---------------------------- | --------------------------- |
+  | Active/Archived -> Trash     | No (reversible via Restore) |
+  | Archive                      | No (reversible)             |
+  | Restore                      | No (reversible, low-stakes) |
+  | Delete forever (single note) | **Yes**                     |
+  | Empty trash                  | **Yes**                     |
+  | Delete label                 | **Yes**                     |
 
   Each confirmation names the specific consequence (not generic copy); the
   destructive button uses the `destructive` token; "Cancel" is the
   default-focused button so an accidental Enter never destroys something.
+
 - No dedicated offline-detection UI for MVP (offline-first sync is an
   explicit non-goal) - network failures surface via the same toast/rollback
   path as any other failure.
@@ -360,12 +361,12 @@ default already exists.
 
 **Typography**:
 
-| Element | Style |
-|---|---|
-| Page/view heading | `text-lg font-semibold` |
-| Note card title | `text-sm font-medium` |
-| Note card body | `text-sm` |
-| Sidebar nav item | `text-sm font-medium` |
+| Element                   | Style                                                               |
+| ------------------------- | ------------------------------------------------------------------- |
+| Page/view heading         | `text-lg font-semibold`                                             |
+| Note card title           | `text-sm font-medium`                                               |
+| Note card body            | `text-sm`                                                           |
+| Sidebar nav item          | `text-sm font-medium`                                               |
 | Section header ("PINNED") | `text-xs font-medium uppercase tracking-wide text-muted-foreground` |
 
 Base font: shadcn/Tailwind default stack, unchanged.
@@ -382,11 +383,11 @@ separate fill color.
 
 **Borders/elevation**:
 
-| Element | Rest | Hover/active |
-|---|---|---|
-| Note card | 1px `border`, no shadow | `shadow-sm` |
-| Dialog | - | `shadow-lg` |
-| Popover | - | `shadow-md` |
+| Element   | Rest                    | Hover/active |
+| --------- | ----------------------- | ------------ |
+| Note card | 1px `border`, no shadow | `shadow-sm`  |
+| Dialog    | -                       | `shadow-lg`  |
+| Popover   | -                       | `shadow-md`  |
 
 **Semantic colors**: shadcn's default variable set (`primary`, `secondary`,
 `muted`, `accent`, `destructive`, `border`, `input`, `ring`, etc.) plus one
@@ -402,13 +403,13 @@ light-theme and dark-theme shade:
 
 **Interaction states**:
 
-| State | Treatment |
-|---|---|
-| Hover (card) | `shadow-sm` |
-| Hover (button/icon) | shadcn default `hover:bg-accent` |
-| Focus | shadcn/Radix default visible ring - never suppressed |
-| Destructive | `destructive` token on delete-forever text/buttons and confirm actions |
-| Disabled | reduced opacity + `cursor-not-allowed` (shadcn default) |
+| State               | Treatment                                                              |
+| ------------------- | ---------------------------------------------------------------------- |
+| Hover (card)        | `shadow-sm`                                                            |
+| Hover (button/icon) | shadcn default `hover:bg-accent`                                       |
+| Focus               | shadcn/Radix default visible ring - never suppressed                   |
+| Destructive         | `destructive` token on delete-forever text/buttons and confirm actions |
+| Disabled            | reduced opacity + `cursor-not-allowed` (shadcn default)                |
 
 ## 20. Shared primitives vs feature-specific components
 
