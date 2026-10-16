@@ -61,18 +61,18 @@ Do not wait for `networkidle` on a preview: Clerk keeps connections open and the
 
 Names only, in `.env.local` (git-ignored), and every one is in `.env.example`:
 
-| Name | For |
-|---|---|
-| `E2E_CLERK_TEST_EMAIL` | the `+clerk_test` Owner |
+| Name                                                    | For                                      |
+| ------------------------------------------------------- | ---------------------------------------- |
+| `E2E_CLERK_TEST_EMAIL`                                  | the `+clerk_test` Owner                  |
 | `CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | the app, and `@clerk/testing` signing in |
-| `DATABASE_URL` | the app (Neon) |
-| `VERCEL_AUTOMATION_BYPASS_SECRET` | reaching a protected preview |
+| `DATABASE_URL`                                          | the app (Neon)                           |
+| `VERCEL_AUTOMATION_BYPASS_SECRET`                       | reaching a protected preview             |
 
 `vercel env pull .env.local` rewrites the whole file: check afterward, by name, that the bypass secret is still there.
 
 ## E2E
 
-`npm run e2e` builds, starts the app and runs the whole suite (Playwright, Chromium). The config loads `.env.local`, and a missing variable fails the run and names it. Signing in is `clerk.signIn` from `@clerk/testing` (`e2e/shell.spec.ts`). Tests tagged `@smoke` are signed out and read only: the `/try-out` tests and the `/` redirect.
+`npm run e2e` builds, starts the app and runs the whole suite (Playwright, Chromium). The config loads `.env.local`, and a missing variable fails the run and names it. Signing in is `clerk.signIn` from `@clerk/testing`, wrapped in `signInAsOwner` (`e2e/sign-in.ts`). Tests tagged `@smoke` are signed out and read only: the `/try-out` tests and the `/` redirect.
 
 CI: `.github/workflows/e2e.yml` runs the whole suite on every preview deployment (`E2E (preview)`) and the `@smoke` tests on https://gfk.lol after every production deployment (`E2E (production)`). Tracing stays off.
 
@@ -82,7 +82,7 @@ A rule with no screen (ownership, limits, a Server Action's insert) is proven by
 
 ## Evidence
 
-Into `.verification/<branch>/` (git-ignored): `playwright-cli screenshot --filename=.verification/<branch>/<name>.png`, the server log, and `playwright-cli console` output. Exercise the real user path, capture the action and the resulting state. There are no rows to check until the notes tickets ship.
+Into `.verification/<branch>/` (git-ignored): `playwright-cli screenshot --filename=.verification/<branch>/<name>.png`, the server log, and `playwright-cli console` output. Exercise the real user path, capture the action and the resulting state. The test Owner's Notes are shared and never cleaned up yet, so find a Note by its unique title and count cards instead of assuming an empty grid.
 
 Performance: `npx -y lighthouse@latest <url> --only-categories=performance` (the chrome-devtools-axi Lighthouse has no performance category). Mobile lab LCP is about 3.6 s on every public page today, from Clerk's script in the root layout: not a regression of the change under test.
 
