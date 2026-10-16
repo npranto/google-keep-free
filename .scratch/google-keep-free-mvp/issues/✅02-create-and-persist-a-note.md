@@ -1,6 +1,6 @@
 # 02: Create and persist a Note
 
-**Status:** in-progress (umbrella: split into 02.01 to 02.03 on 2026-10-13)
+**Status:** done - all sub-tickets 02.01-02.03 done
 **Lane:** each child carries its own
 **Classification:** SEQUENTIAL
 **Blocked by:** 01 (Application foundation)
@@ -11,7 +11,7 @@ Run in order. Each is its own PR.
 
 - [x] 02.01 Notes table and migration (PR #41, v0.2.12)
 - [x] 02.02 createNote action and active Notes query (umbrella: 02.02.01 to 02.02.03, PRs #44, #46, #51)
-- [ ] 02.03 Composer and Notes grid
+- [x] 02.03 Composer and Notes grid (umbrella: 02.03.01 and 02.03.02, PRs #53, #57)
 
 The umbrella is done when all three are closed and the acceptance criteria below hold
 end to end. Decisions live in the children.
@@ -39,13 +39,13 @@ the initial create, pin/color/labels/archive/trash, any toolbar icons on the car
 
 ## Acceptance criteria
 
-- [ ] Typing into the composer and closing it (blur/close) with content creates a
+- [x] Typing into the composer and closing it (blur/close) with content creates a
       Note as `Active`.
-- [ ] Closing an empty composer performs no database write.
-- [ ] After a full page refresh, the created Note is visible in the grid.
-- [ ] Title/body over the char limits are rejected server-side (validated even if
+- [x] Closing an empty composer performs no database write.
+- [x] After a full page refresh, the created Note is visible in the grid.
+- [x] Title/body over the char limits are rejected server-side (validated even if
       UI doesn't yet enforce it visually).
-- [ ] A second Owner's session never sees this Note.
+- [x] A second Owner's session never sees this Note.
 
 ## Relevant spec sections
 
@@ -83,3 +83,10 @@ least one of them. This is why 02–08 are sequential, not a parallelization
 opportunity.
 
 ## Comments
+
+- 2026-10-16: done. All five criteria hold and all three children are closed: 02.01
+  (PR #41, v0.2.12), 02.02 (PRs #44, #46, #51) and 02.03 (PRs #53, #57, v0.2.28). The
+  over-limit and second-Owner criteria rest on the validation unit tests and the
+  `getActiveNotes` integration test; the end-to-end create and refresh flow is proven on
+  the preview and, for 02.03.02, by the owner's signed-in check on Production (there is no
+  Production test account). Next is 03.
