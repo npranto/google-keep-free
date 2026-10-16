@@ -1,9 +1,10 @@
 {
   "name": "google-keep-free",
-  "version": "0.2.25",
+  "version": "0.2.26",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run db:check-connection",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -16,7 +17,7 @@
     "e2e:ui": "playwright test --ui",
     "db:generate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs migrate",
-    "db:check-connection": "node --env-file=.env.local lib/db/check-connection.mts"
+    "db:check-connection": "node --env-file-if-exists=.env.local lib/db/check-connection.mts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.9.11",

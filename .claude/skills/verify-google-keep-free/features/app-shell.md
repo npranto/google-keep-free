@@ -9,6 +9,7 @@
 **What proves it works:** after sign-in the URL is `/`, the banner shows "Keep", the navigation "Note views" lists Notes, Archive and Trash with Notes marked current, and either the list "Notes" or the text "Notes you add appear here" is visible. The console has 0 errors (Clerk's development-keys warning is expected).
 
 **Gotchas:**
+- On Production there is no test Owner, so the first database read of `/` is not proven by a signed-in load. A rejected `DATABASE_URL` is caught earlier, by the `prebuild` connectivity check (`npm run db:check-connection`) that stops the Vercel build, so a bad credential never gets promoted.
 - Signing in takes a few seconds: snapshot again if the page still shows the code box.
 - There is no sign-out button yet (ticket 18), so end a run by closing the browser.
 - The sidebar buttons do nothing yet.

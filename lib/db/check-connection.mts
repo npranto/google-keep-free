@@ -1,4 +1,5 @@
-// Run with: node --env-file=.env.local lib/db/check-connection.mts
+// Run with: npm run db:check-connection (also runs before every `npm run build`).
+// Loads .env.local when it exists, otherwise uses the process environment.
 import { sql } from "drizzle-orm";
 
 import { db } from "./index.ts";

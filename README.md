@@ -50,7 +50,7 @@ Available scripts:
 | Script                     | Purpose                          |
 | -------------------------- | -------------------------------- |
 | `npm run dev`              | Start the development server     |
-| `npm run build`            | Create a production build        |
+| `npm run build`            | Check the database, then build   |
 | `npm run start`            | Serve the production build       |
 | `npm run lint`             | Run ESLint                       |
 | `npm run typecheck`        | Run the TypeScript compiler      |
