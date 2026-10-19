@@ -1,6 +1,6 @@
 # App shell and Notes empty state (core flow)
 
-**What it is:** the signed-in Owner's home at `/`: a top bar ("Keep" and a search box), a sidebar ("Note views": Notes, Archive, Trash) and a main area with the composer ("Take a note...", see `composer.md`) above the Owner's Active Notes as a read-only grid of cards (a list named "Notes"), or "Notes you add appear here" when there are none. The shared test Owner always has Notes, so the grid shows for it; the empty state shows only when every Note is archived or removed (a proof run can archive the rows and restore them).
+**What it is:** the signed-in Owner's home at `/`: a top bar ("Keep" and a search box), a sidebar ("Note views": Notes, Archive, Trash) and a main area with the page heading "Notes" (the page's one `h1`), the composer ("Take a note...", see `composer.md`) above the Owner's Active Notes as a read-only grid of cards (a list named "Notes"), or "Notes you add appear here" when there are none. The shared test Owner always has Notes, so the grid shows for it; the empty state shows only when every Note is archived or removed (a proof run can archive the rows and restore them).
 
 **How to get to it:** sign in at `/sign-in` as the test Owner (see the Drive section of `SKILL.md`).
 

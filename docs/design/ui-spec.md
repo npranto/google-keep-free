@@ -80,8 +80,8 @@ Search is not a view/route - it's a client-side debounced overlay that
 replaces the grid content in place (Section 9) while leaving the underlying
 view/label selection intact underneath.
 
-Page heading reflects the current context: "Notes" is implicit (no heading
-needed above the composer), "Archive", "Trash", or the label's name.
+Page heading reflects the current context: "Notes" (a visible `h1` above the
+composer), "Archive", "Trash", or the label's name.
 Trash additionally shows an "Empty trash" button beside its heading.
 
 ## 5. Component hierarchy
