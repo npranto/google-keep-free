@@ -1,6 +1,6 @@
 # 19: Bump Next.js to clear high-severity advisories
 
-**Status:** open
+**Status:** closed
 **Classification:** DEPENDENCY (found during 01.05's `/ns-to-quality-check`, stage 7 -
 not part of the spec's 15 numbered acceptance criteria, does not block 16)
 **Blocked by:** None (can start immediately)
@@ -35,9 +35,9 @@ audit to CI (decide that separately).
 
 ## Acceptance criteria
 
-- [ ] `npm audit --omit=dev` reports 0 high or critical vulnerabilities.
-- [ ] Types, lint, format, tests, build and the e2e job all pass on the PR.
-- [ ] The signed-out redirect to `/sign-in` and the signed-in empty shell still work on
+- [x] `npm audit --omit=dev` reports 0 high or critical vulnerabilities.
+- [x] Types, lint, format, tests, build and the e2e job all pass on the PR.
+- [x] The signed-out redirect to `/sign-in` and the signed-in empty shell still work on
       the preview deployment.
 
 ## Demo / verification
@@ -49,3 +49,9 @@ see the shell.
 
 Small. Risk is medium: a framework upgrade touches routing, `proxy.ts` and
 `@clerk/nextjs` compatibility, so keep it a single-purpose PR.
+
+## Comments
+
+- 2026-10-19: CLOSED, delivered by PR #59 (`c249bc2`, app v0.2.30), which had no ticket of its own. It moved `next` and `eslint-config-next` from 16.3.6 to 16.4.2. 16.4.0, the version named above, is still affected by GHSA-p3m5-59mp-jv5r (a crafted unauthenticated request to a Server Action, such as `createNote`, can exhaust CPU), so the target became 16.4.1 or later. `package-lock.json` resolves `next` to 16.4.2.
+- 2026-10-19: proof. `npm audit --omit=dev` reports 0 vulnerabilities. On #59, typecheck, lint, unit tests and build pass, and `E2E (preview)` passed 12 of 12 against the preview, including the signed-out redirect to `/sign-in` and the signed-in shell. After the merge, `E2E (production)` passed 7 of 7 on `c249bc2`. #59 itself reported that signed-in E2E had not been run where it was authored; CI covered that.
+- 2026-10-19: not in scope, not ticketed: `npm audit` (all dependencies) still reports 9 findings (5 high, 4 moderate), all dev-only, from the `eslint-config-next` chain and `drizzle-kit`'s `@esbuild-kit` chain.
