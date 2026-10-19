@@ -1,12 +1,39 @@
-# Progress: 02 Create and persist a Note (umbrella, split into 02.01, 02.02.01-03, 02.03.01-02)
+# Progress: 02 Create and persist a Note (umbrella, split into 02.01, 02.02.01-03, 02.03.01-02), all shipped
 
 **Recipe:** ticket ([DELIVER]) x3 · **Mode:** guided · **Teach level:** deep
 
-tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02.03.01 ─ ⚪ 02.03.02   5 of 6 shipped
+tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02.03.01 ─ ✅ 02.03.02   6 of 6 shipped
 
 02.03 was split into 02.03.01 (grid) and 02.03.02 (composer) on 2026-10-14. Planning phases
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
+
+## 02.03.02 Composer · Standard · branch feat/02.03.02-composer
+
+**Mode:** autopilot (watched verify)
+
+- [x] split-ticket (skipped, small)
+- [x] branch (from main @ 9a13f7e)
+- [x] scope-check
+- [x] implement (`Composer.tsx`, `page.tsx`, `e2e/composer.spec.ts`, shared `e2e/sign-in.ts`; 43 unit tests)
+- [x] verify (local) watched, VERIFIED; E2E 12 of 12; Lighthouse, tablet and automated accessibility scan not run
+- [x] understand
+- [x] review (one subagent: request changes (light), 0 blocking, 4 should-fix and 4 nits fixed, B5 accepted)
+- [x] quality-check (13 pass, 1 skipped (no migrations), 1 inferred (performance); docs updated)
+- [x] save
+- [x] pr (#57, preview SMOKE PASS, CI green on `2f1ed20`, E2E on the preview 12 of 12)
+- [x] release (merged `98b21e6`, v0.2.28)
+- [x] verify (production) PARTIAL: smoke E2E 7 of 7, signed-out pages clean, signed-in criteria not run (no test account, same accepted gap as 02.03.01)
+- [x] observe (healthy, medium tier: 0 errors and 0 5xx in about 50 requests, 6 Server Action calls from the owner all 200)
+- [x] shipped
+- [x] close (CLOSED, PR #58; follow-ups 02.03.04 and 02.03.05)
+
+Done since: 01.05.08 (Production database health check, PR #55, v0.2.26, closed in #56) shipped
+as a `prebuild` check. #59 (Next.js bump to 16.4.2 for the Server Action denial of service,
+app 0.2.30) merged outside a ticket; ticket 19 was closed against it on 2026-10-19.
+
+**Next:** 03 Edit a note with autosave (unblocked). Open follow-ups: 01.05.09, 01.05.10,
+02.03.03, 02.03.04, 02.03.05.
 
 ## 02.03.01 Notes grid · Standard · branch feat/02.03.01-notes-grid
 
