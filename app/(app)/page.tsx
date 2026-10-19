@@ -12,6 +12,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <h1 className="px-4 pt-4 text-lg font-semibold">Notes</h1>
       <Composer />
       {cards.length === 0 ? <EmptyState /> : <NoteGrid notes={cards} />}
     </>
