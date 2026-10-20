@@ -1,6 +1,6 @@
 {
   "name": "google-keep-free",
-  "version": "0.2.34",
+  "version": "0.2.35",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -45,6 +45,7 @@
     "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "jsdom": "^26.1.0",
     "prettier": "^3.9.9",
     "tailwindcss": "^4",
     "typescript": "^5",

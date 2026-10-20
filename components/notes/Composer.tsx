@@ -1,10 +1,10 @@
 "use client";
 
 import {
+  startTransition,
   useEffect,
   useRef,
   useState,
-  useTransition,
   type FocusEvent,
   type KeyboardEvent,
 } from "react";
@@ -27,16 +27,23 @@ export function Composer() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [saving, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const container = useRef<HTMLDivElement>(null);
   const collapsed = useRef<HTMLInputElement>(null);
-  // State updates land after the next render, so Escape followed by the blur it
-  // causes would both see saving as false. A ref closes that gap.
+  // Set synchronously so blur and the click that caused it cannot both save.
+  // Cleared only after the render that closes the composer or shows the error
+  // has committed. Clearing it when the request promise settles is too early:
+  // Escape repeats, and that continuation runs before React paints the reset,
+  // so a second close inserts another copy of the same Note.
   const inFlight = useRef(false);
   // Set when a close came from the keyboard or the Close button, where focus
   // was inside the composer and would otherwise fall to the page body.
   const focusAfterClose = useRef(false);
+
+  useEffect(() => {
+    if (!pending) inFlight.current = false;
+  }, [pending]);
 
   useEffect(() => {
     if (!open && focusAfterClose.current) {
@@ -63,21 +70,25 @@ export function Composer() {
     }
 
     inFlight.current = true;
+    setPending(true);
     setError(null);
     // The follow-up updates are transitions too: a state update after an await
     // is not part of the outer one, and reset() should land with the refreshed
-    // grid, not before it.
+    // grid, not before it. pending stays true until that render, and the effect
+    // above is what releases the guard.
     startTransition(async () => {
       try {
         const result = await createNote({ title, body });
         startTransition(() => {
+          setPending(false);
           if (result.ok) reset();
           else setError(result.error.message);
         });
       } catch {
-        startTransition(() => setError(SAVE_FAILED));
-      } finally {
-        inFlight.current = false;
+        startTransition(() => {
+          setPending(false);
+          setError(SAVE_FAILED);
+        });
       }
     });
   }
@@ -132,7 +143,7 @@ export function Composer() {
           placeholder="Title"
           maxLength={TITLE_MAX}
           value={title}
-          readOnly={saving}
+          readOnly={pending}
           onChange={(event) => setTitle(event.target.value)}
           className="h-auto border-0 px-4 pt-3 pb-1 font-medium shadow-none focus-visible:ring-0"
         />
@@ -144,7 +155,7 @@ export function Composer() {
           placeholder="Take a note..."
           maxLength={BODY_MAX}
           value={body}
-          readOnly={saving}
+          readOnly={pending}
           onChange={(event) => setBody(event.target.value)}
           className="max-h-96 min-h-20 resize-none border-0 px-4 shadow-none focus-visible:ring-0"
         />
@@ -156,6 +167,7 @@ export function Composer() {
             type="button"
             variant="ghost"
             size="sm"
+            disabled={pending}
             onClick={() => close(true)}
           >
             Close
