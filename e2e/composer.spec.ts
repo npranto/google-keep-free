@@ -10,6 +10,28 @@ const collapsedField = (page: Page) =>
 const titleField = (page: Page) => page.getByLabel("Title", { exact: true });
 const bodyField = (page: Page) => page.getByLabel("Note", { exact: true });
 
+// Waits for the page to settle on the grid or the empty state, then counts cards.
+async function settledCardCount(page: Page) {
+  await expect(
+    page
+      .getByRole("list", { name: "Notes" })
+      .or(page.getByText("Notes you add appear here")),
+  ).toBeVisible();
+  return page.getByRole("article").count();
+}
+
+// A Server Action call (createNote) is a POST with a next-action header. Other
+// POSTs, such as Clerk's, are not writes. The returned list fills as they happen.
+function watchServerActions(page: Page) {
+  const calls: string[] = [];
+  page.on("request", (request) => {
+    if (request.method() === "POST" && request.headers()["next-action"]) {
+      calls.push(request.url());
+    }
+  });
+  return calls;
+}
+
 // The shared test Owner's Notes are never cleaned up (02.03.02 "Decisions"), so
 // each run uses a unique title and counts cards instead of assuming a clean grid.
 // Not @smoke: it signs in and writes.
@@ -68,22 +90,8 @@ test.describe("composer", () => {
   }) => {
     await signInAsOwner(page);
     const cards = page.getByRole("article");
-    // Wait for the page to settle on the grid or the empty state first.
-    await expect(
-      page
-        .getByRole("list", { name: "Notes" })
-        .or(page.getByText("Notes you add appear here")),
-    ).toBeVisible();
-    const before = await cards.count();
-
-    // A Server Action call (createNote) is a POST with a next-action header.
-    // Other POSTs, such as Clerk's, are not writes.
-    const actionCalls: string[] = [];
-    page.on("request", (request) => {
-      if (request.method() === "POST" && request.headers()["next-action"]) {
-        actionCalls.push(request.url());
-      }
-    });
+    const before = await settledCardCount(page);
+    const actionCalls = watchServerActions(page);
 
     await collapsedField(page).click();
     await page.getByRole("button", { name: "Close" }).click();
@@ -92,6 +100,36 @@ test.describe("composer", () => {
     await collapsedField(page).click();
     await titleField(page).fill("   ");
     await page.getByRole("button", { name: "Close" }).click();
+    await expect(titleField(page)).toHaveCount(0);
+
+    await expect(cards).toHaveCount(before);
+    expect(actionCalls).toEqual([]);
+  });
+
+  test("Enter in Title moves focus to Note, and Enter in Note adds a line", async ({
+    page,
+  }) => {
+    await signInAsOwner(page);
+    const cards = page.getByRole("article");
+    const before = await settledCardCount(page);
+    const actionCalls = watchServerActions(page);
+
+    await collapsedField(page).click();
+    await titleField(page).fill("E2E enter in title");
+    await titleField(page).press("Enter");
+    // Focus moved on, and the composer neither closed nor changed the title.
+    await expect(bodyField(page)).toBeFocused();
+    await expect(titleField(page)).toHaveValue("E2E enter in title");
+
+    await bodyField(page).pressSequentially("first");
+    await bodyField(page).press("Enter");
+    await bodyField(page).pressSequentially("second");
+    await expect(bodyField(page)).toHaveValue("first\nsecond");
+
+    // Leave nothing behind: an empty composer closes without a save.
+    await titleField(page).fill("");
+    await bodyField(page).fill("");
+    await page.keyboard.press("Escape");
     await expect(titleField(page)).toHaveCount(0);
 
     await expect(cards).toHaveCount(before);

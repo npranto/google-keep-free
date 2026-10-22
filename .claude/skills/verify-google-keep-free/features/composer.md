@@ -6,7 +6,7 @@
 
 **How to drive it:** `playwright-cli` sign-in, `snapshot`, click the "Take a note" textbox, fill "Title" and "Note", then click "Close". Or `npx playwright test e2e/composer.spec.ts`. Check both color schemes with `playwright-cli set-color-scheme dark`; the app follows `prefers-color-scheme`, so toggling a `dark` class does nothing.
 
-**What proves it works:** after Close the composer collapses and a card with the typed title is in the "Notes" list, and it is still there after a reload. Escape and clicking outside the composer save the same way, and Escape returns focus to the collapsed field. An empty or whitespace-only close adds no card and sends no Server Action request (a POST with a `next-action` header).
+**What proves it works:** after Close the composer collapses and a card with the typed title is in the "Notes" list, and it is still there after a reload. Escape and clicking outside the composer save the same way, and Escape returns focus to the collapsed field. An empty or whitespace-only close adds no card and sends no Server Action request (a POST with a `next-action` header). Enter in the Title field moves focus to the Note field and saves nothing (same: no request, no new card); Enter in the Note field adds a line.
 
 **Gotchas:**
 
