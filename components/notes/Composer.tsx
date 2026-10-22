@@ -31,6 +31,7 @@ export function Composer() {
   const [error, setError] = useState<string | null>(null);
   const container = useRef<HTMLDivElement>(null);
   const collapsed = useRef<HTMLInputElement>(null);
+  const bodyField = useRef<HTMLTextAreaElement>(null);
   // State updates land after the next render, so Escape followed by the blur it
   // causes would both see saving as false. A ref closes that gap.
   const inFlight = useRef(false);
@@ -95,6 +96,18 @@ export function Composer() {
     if (event.key === "Escape" && !event.nativeEvent.isComposing) close(true);
   }
 
+  // Enter in the title carries on into the note and saves nothing (ui-spec
+  // section 18). preventDefault keeps the Enter from also typing a newline into
+  // the field that just took focus. Enter also confirms an IME candidate: that
+  // is not a move. Safari ends the composition before this keydown, so
+  // isComposing is already false there; keyCode 229 still marks it.
+  function handleTitleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== "Enter") return;
+    if (event.nativeEvent.isComposing || event.keyCode === 229) return;
+    event.preventDefault();
+    bodyField.current?.focus();
+  }
+
   if (!open) {
     return (
       <div className="mx-auto w-full max-w-xl px-4 pt-6">
@@ -134,12 +147,14 @@ export function Composer() {
           value={title}
           readOnly={saving}
           onChange={(event) => setTitle(event.target.value)}
+          onKeyDown={handleTitleKeyDown}
           className="h-auto border-0 px-4 pt-3 pb-1 font-medium shadow-none focus-visible:ring-0"
         />
         <Label htmlFor="composer-body" className="sr-only">
           Note
         </Label>
         <Textarea
+          ref={bodyField}
           id="composer-body"
           placeholder="Take a note..."
           maxLength={BODY_MAX}
