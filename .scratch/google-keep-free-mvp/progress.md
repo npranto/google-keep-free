@@ -8,6 +8,26 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
 
+## 02.03.04 Composer title: Enter moves focus · Quick · branch feat/02.03.04-composer-title-enter-focus
+
+**Mode:** step (`/ns-route`)
+
+- [x] split-ticket (skipped, Quick)
+- [x] branch (from main @ ef40eba)
+- [x] scope-check (all OK, no trim, no design choice)
+- [x] implement (`Composer.tsx`, `e2e/composer.spec.ts`; the new test was seen failing first)
+- [x] verify (local) manual, 92 / 100 SAFE TO RELEASE (first scored 95, corrected: undo 2 of 5)
+- [x] understand
+- [x] review (main session, one pass: Approve with nits, both fixed)
+- [x] quality-check (everything available: 14 pass, 1 not applicable)
+- [x] save (2 commits, then the `chore(release)` bump)
+- [x] pr (#65, preview 93 / 100, CI 7 of 7, E2E on the preview 13 of 13)
+- [x] release (merged `e725ee9`, v0.2.35)
+- [x] verify (production) PARTIAL: smoke E2E 7 of 7, signed-out pages clean, signed-in criteria not run (no test account, same accepted gap as 02.03.01 and 02.03.02)
+- [x] observe (healthy, low tier: 0 errors and 0 5xx in 50 requests, one Server Action call, 200)
+- [x] shipped
+- [x] close (CLOSED; the three findings made along the way were not ticketed, by choice; 02.04 filed)
+
 ## 02.03.02 Composer · Standard · branch feat/02.03.02-composer
 
 **Mode:** autopilot (watched verify)
@@ -32,8 +52,11 @@ Done since: 01.05.08 (Production database health check, PR #55, v0.2.26, closed 
 as a `prebuild` check. #59 (Next.js bump to 16.4.2 for the Server Action denial of service,
 app 0.2.30) merged outside a ticket; ticket 19 was closed against it on 2026-10-19.
 
+02.03.03 (Notes view page heading, PR #62, v0.2.33) and 02.03.04 (Composer title: Enter moves
+focus, PR #65, v0.2.35, run through `/ns-route` in step mode) are closed.
+
 **Next:** 03 Edit a note with autosave (unblocked). Open follow-ups: 01.05.09, 01.05.10,
-02.03.03, 02.03.04, 02.03.05.
+02.03.05, 02.04 (`"type": "module"`).
 
 ## 02.03.01 Notes grid · Standard · branch feat/02.03.01-notes-grid
 
