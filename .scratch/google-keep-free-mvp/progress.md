@@ -8,6 +8,19 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
 
+## 02.03.06 /forge-test rendering demo page · Standard · branch feat/02.03.06-forge-test-rendering-demo-page
+
+**Mode:** step (`/forge-route`, then `/forge-feature`) · ledger run `forge-test-rendering-demo-page-02-03-06`
+
+- [x] inspect, plan (decisions settled with Next 16 docs and an API probe: DummyJSON, Cache Components off, `no-store` for request-time cards, lazy via a client wrapper)
+- [x] build (3 slices: server cards, client cards, streamed card)
+- [x] verify (local) unit 54 of 54, Playwright 26 of 26, axe 0 violations, 6 red checks seen
+- [x] review (independent cold pass: request-changes with 3 important, all fixed; approved)
+- [x] pr (#69, v0.2.39, CI green, `E2E (preview)` 26 of 26 none skipped)
+- [x] release (merged `059a1c6`, v0.2.39)
+- [x] verify (production) Production E2E passed; `gfk.lol/forge-test` 200, `no-store`, `noindex`, server cards `ready`
+- [x] close (CLOSED; the page is a demo, unlinked)
+
 ## 02.03.05 Composer save-failure test · Quick · branch feat/02.03.05-composer-save-failure-test
 
 **Mode:** step (`/forge-route`, then `/forge-ticket`)
@@ -66,7 +79,8 @@ app 0.2.30) merged outside a ticket; ticket 19 was closed against it on 2026-10-
 
 02.03.03 (Notes view page heading, PR #62, v0.2.33), 02.03.04 (Composer title: Enter moves
 focus, PR #65, v0.2.35, run through `/ns-route` in step mode) and 02.03.05 (Composer
-save-failure test, PR #67, v0.2.37) are closed.
+save-failure test, PR #67, v0.2.37) are closed. 02.03.06 (`/forge-test` rendering demo page,
+PR #69, v0.2.39, run through `/forge-route` in step mode) is closed too.
 
 **Next:** 03 Edit a note with autosave (unblocked). Open follow-ups: 01.05.09, 01.05.10,
 02.04 (`"type": "module"`).
