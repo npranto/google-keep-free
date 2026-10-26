@@ -8,6 +8,19 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
 
+## 02.04 Switch the package to ES modules · Standard · branch feat/02.04-package-type-module
+
+**Mode:** step (`/forge-route`, then `/forge-flow-ticket`)
+
+- [x] scope-check (all OK; five risks listed, each settled by a run)
+- [x] branch, build (`"type": "module"` in `package.json`; no other file needed to change)
+- [x] verify (local) baseline on `main` unit 54 and integration 14; after: same counts, E2E 26 of 26 none skipped, typecheck, lint, format clean, `db:generate` no changes, no build warning, `dev` redirect ok
+- [x] review (skipped; LOW risk, one-line diff, self-reviewed)
+- [x] pr (#71, v0.2.41, CI green including `E2E (preview)` 26 of 26)
+- [x] release (merged `2419e8d`, v0.2.41)
+- [x] verify (production) Healthcheck, Release and Production E2E (19 smoke) passed; `gfk.lol/` 307 to `/sign-in`, which answers 200
+- [x] close (CLOSED)
+
 ## 02.03.06 /forge-test rendering demo page · Standard · branch feat/02.03.06-forge-test-rendering-demo-page
 
 **Mode:** step (`/forge-route`, then `/forge-feature`) · ledger run `forge-test-rendering-demo-page-02-03-06`
@@ -80,10 +93,10 @@ app 0.2.30) merged outside a ticket; ticket 19 was closed against it on 2026-10-
 02.03.03 (Notes view page heading, PR #62, v0.2.33), 02.03.04 (Composer title: Enter moves
 focus, PR #65, v0.2.35, run through `/ns-route` in step mode) and 02.03.05 (Composer
 save-failure test, PR #67, v0.2.37) are closed. 02.03.06 (`/forge-test` rendering demo page,
-PR #69, v0.2.39, run through `/forge-route` in step mode) is closed too.
+PR #69, v0.2.39, run through `/forge-route` in step mode) is closed too. 02.04
+(`"type": "module"`, PR #71, v0.2.41, run through `/forge-flow-ticket` in step mode) is closed.
 
-**Next:** 03 Edit a note with autosave (unblocked). Open follow-ups: 01.05.09, 01.05.10,
-02.04 (`"type": "module"`).
+**Next:** 03 Edit a note with autosave (unblocked). Open follow-ups: 01.05.09, 01.05.10.
 
 ## 02.03.01 Notes grid · Standard · branch feat/02.03.01-notes-grid
 
