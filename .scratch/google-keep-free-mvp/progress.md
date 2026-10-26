@@ -8,6 +8,18 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
 
+## 02.03.05 Composer save-failure test · Quick · branch feat/02.03.05-composer-save-failure-test
+
+**Mode:** step (`/forge-route`, then `/forge-ticket`)
+
+- [x] scope-check (seam: a browser test that aborts the `createNote` request; no new dependency)
+- [x] implement (`e2e/composer.spec.ts`; the new test was seen red with the catch path changed to `reset()`)
+- [x] verify (local) composer E2E 5 of 5, full suite 14 of 14, unit 43 of 43, lint, typecheck, format clean
+- [x] pr (#67, v0.2.37, CI green including `E2E (preview)`)
+- [x] release (merged `84eb23b`, v0.2.37)
+- [x] verify (production) Healthcheck, Release and Production E2E passed; no product code changed
+- [x] close (CLOSED)
+
 ## 02.03.04 Composer title: Enter moves focus · Quick · branch feat/02.03.04-composer-title-enter-focus
 
 **Mode:** step (`/ns-route`)
@@ -52,11 +64,12 @@ Done since: 01.05.08 (Production database health check, PR #55, v0.2.26, closed 
 as a `prebuild` check. #59 (Next.js bump to 16.4.2 for the Server Action denial of service,
 app 0.2.30) merged outside a ticket; ticket 19 was closed against it on 2026-10-19.
 
-02.03.03 (Notes view page heading, PR #62, v0.2.33) and 02.03.04 (Composer title: Enter moves
-focus, PR #65, v0.2.35, run through `/ns-route` in step mode) are closed.
+02.03.03 (Notes view page heading, PR #62, v0.2.33), 02.03.04 (Composer title: Enter moves
+focus, PR #65, v0.2.35, run through `/ns-route` in step mode) and 02.03.05 (Composer
+save-failure test, PR #67, v0.2.37) are closed.
 
 **Next:** 03 Edit a note with autosave (unblocked). Open follow-ups: 01.05.09, 01.05.10,
-02.03.05, 02.04 (`"type": "module"`).
+02.04 (`"type": "module"`).
 
 ## 02.03.01 Notes grid · Standard · branch feat/02.03.01-notes-grid
 
