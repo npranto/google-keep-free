@@ -12,7 +12,7 @@ Run in order. Each is its own PR.
 - [x] 02.01 Notes table and migration (PR #41, v0.2.12)
 - [x] 02.02 createNote action and active Notes query (umbrella: 02.02.01 to 02.02.03, PRs #44, #46, #51)
 - [x] 02.03 Composer and Notes grid (umbrella: 02.03.01 and 02.03.02, PRs #53, #57)
-- [ ] 02.04 Switch the package to ES modules (Standard, filed at the 02.03.04 quality check; not needed for the criteria below)
+- [x] 02.04 Switch the package to ES modules (Standard, filed at the 02.03.04 quality check, PR #71, v0.2.41; not needed for the criteria below)
 
 The umbrella is done when all three are closed and the acceptance criteria below hold
 end to end. Decisions live in the children.
