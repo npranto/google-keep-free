@@ -106,6 +106,43 @@ test.describe("composer", () => {
     expect(actionCalls).toEqual([]);
   });
 
+  test("a failed save keeps the composer open with the typed text and says why", async ({
+    page,
+  }) => {
+    await signInAsOwner(page);
+    const cards = page.getByRole("article");
+    const before = await settledCardCount(page);
+    const title = `E2E failed save ${Date.now()}`;
+
+    // Fail the createNote call itself: the request never reaches the server, so
+    // nothing is written. Installed after sign-in so Clerk's POSTs pass through.
+    let failedCalls = 0;
+    await page.route("**/*", (route) => {
+      const request = route.request();
+      if (request.method() === "POST" && request.headers()["next-action"]) {
+        failedCalls += 1;
+        return route.abort();
+      }
+      return route.continue();
+    });
+
+    await collapsedField(page).click();
+    await titleField(page).fill(title);
+    await bodyField(page).fill("Must survive a failed save");
+    await page.getByRole("button", { name: "Close" }).click();
+
+    // Next's route announcer is also a role="alert", so match on the text.
+    await expect(
+      page.getByRole("alert").filter({ hasText: "Could not save the note" }),
+    ).toBeVisible();
+    // Guards against passing without the intercept having failed a save.
+    expect(failedCalls).toBe(1);
+    // Still open, with nothing lost and nothing added to the grid.
+    await expect(titleField(page)).toHaveValue(title);
+    await expect(bodyField(page)).toHaveValue("Must survive a failed save");
+    await expect(cards).toHaveCount(before);
+  });
+
   test("Enter in Title moves focus to Note, and Enter in Note adds a line", async ({
     page,
   }) => {
