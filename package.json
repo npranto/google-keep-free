@@ -1,7 +1,8 @@
 {
   "name": "google-keep-free",
-  "version": "0.2.40",
+  "version": "0.2.41",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "prebuild": "npm run db:check-connection",
