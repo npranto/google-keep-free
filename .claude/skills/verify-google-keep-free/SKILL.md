@@ -72,7 +72,7 @@ Names only, in `.env.local` (git-ignored), and every one is in `.env.example`:
 
 ## E2E
 
-`npm run e2e` builds, starts the app and runs the whole suite (Playwright, Chromium). The config loads `.env.local`, and a missing variable fails the run and names it. Signing in is `clerk.signIn` from `@clerk/testing`, wrapped in `signInAsOwner` (`e2e/sign-in.ts`). Tests tagged `@smoke` are signed out and read only: the `/try-out` tests and the `/` redirect.
+`npm run e2e` builds, starts the app and runs the whole suite (Playwright, Chromium). The config loads `.env.local`, and a missing variable fails the run and names it. Signing in is `clerk.signIn` from `@clerk/testing`, wrapped in `signInAsOwner` (`e2e/sign-in.ts`). Tests tagged `@smoke` are signed out and read only: the `/try-out` and `/forge-test` tests and the `/` redirect.
 
 CI: `.github/workflows/e2e.yml` runs the whole suite on every preview deployment (`E2E (preview)`) and the `@smoke` tests on https://gfk.lol after every production deployment (`E2E (production)`). Tracing stays off.
 
