@@ -96,7 +96,10 @@ save-failure test, PR #67, v0.2.37) are closed. 02.03.06 (`/forge-test` renderin
 PR #69, v0.2.39, run through `/forge-route` in step mode) is closed too. 02.04
 (`"type": "module"`, PR #71, v0.2.41, run through `/forge-flow-ticket` in step mode) is closed.
 
-**Next:** 03 Edit a note with autosave (unblocked). Open follow-ups: 01.05.09, 01.05.10.
+01.05.10 (why Neon rejected the Production credential) was closed on 2026-10-26 without the
+investigation, by the owner's decision: the cause stays unknown and no rotation note exists.
+
+**Next:** 03 Edit a note with autosave (unblocked). Open follow-up: 01.05.09.
 
 ## 02.03.01 Notes grid · Standard · branch feat/02.03.01-notes-grid
 
