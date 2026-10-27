@@ -102,6 +102,9 @@ investigation, by the owner's decision: the cause stays unknown and no rotation 
 01.05.09 (Rollback instant path returns 404) was closed on 2026-10-26 without the fix, by the
 owner's decision: the instant path is presumed still broken and the rebuild fallback is the undo.
 
+Ticket 20 (composer: a repeated Escape may insert the note twice) was filed on 2026-10-26 from
+draft PR #64, which was closed unmerged. It is not reproduced and is deferred until after the MVP.
+
 **Next:** 03 Edit a note with autosave (unblocked). No open follow-ups from 01.05.
 
 ## 02.03.01 Notes grid · Standard · branch feat/02.03.01-notes-grid
