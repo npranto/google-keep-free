@@ -99,7 +99,10 @@ PR #69, v0.2.39, run through `/forge-route` in step mode) is closed too. 02.04
 01.05.10 (why Neon rejected the Production credential) was closed on 2026-10-26 without the
 investigation, by the owner's decision: the cause stays unknown and no rotation note exists.
 
-**Next:** 03 Edit a note with autosave (unblocked). Open follow-up: 01.05.09.
+01.05.09 (Rollback instant path returns 404) was closed on 2026-10-26 without the fix, by the
+owner's decision: the instant path is presumed still broken and the rebuild fallback is the undo.
+
+**Next:** 03 Edit a note with autosave (unblocked). No open follow-ups from 01.05.
 
 ## 02.03.01 Notes grid · Standard · branch feat/02.03.01-notes-grid
 
