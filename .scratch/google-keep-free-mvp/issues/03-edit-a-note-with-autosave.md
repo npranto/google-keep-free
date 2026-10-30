@@ -9,7 +9,7 @@
 
 Run in order. Each is its own PR and reaches production before the next starts.
 
-- [ ] 03.01 `updateNote` Server Action (Standard)
+- [x] 03.01 `updateNote` Server Action (Standard, PR #76, v0.2.46)
 - [ ] 03.02 `useAutosave` hook (Standard)
 - [ ] 03.03 Edit a Note in a dialog (Standard; blocked by 03.01 and 03.02)
 
