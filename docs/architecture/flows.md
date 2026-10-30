@@ -61,15 +61,18 @@ UI: owner types in the open note editor
   → serialized: if a save is in flight, newer edits queue in pendingRef and flush next
 → flush() calls updateNote({ id, title, body, version }) Server Action
 → lib/notes/actions.ts: updateNote(input)
+  → validation.ts: updateNoteSchema.safeParse(input) - enforces 300/20,000 char caps server-side,
+                   and a title or a body; a failure returns kind "validation" before anything else
   → getOwnerId()
-  → validation.ts: updateNoteSchema.parse(input) - enforces 300/20,000 char caps server-side
   → database: UPDATE notes SET title=?, body=?, version=version+1, updated_at=now()
-              WHERE id=? AND owner_id=? AND version=? RETURNING *
-  → zero rows returned → follow-up SELECT to disambiguate stale-version vs not-found/not-yours
+              WHERE id=? AND owner_id=? AND version=? AND state <> 'trashed'
+              RETURNING id, version
+  → zero rows returned → kind "not_found" (03.01: every zero-row case, including a stale version)
+    → ticket 04 adds a follow-up SELECT to disambiguate stale-version vs not-found/not-yours
 → revalidatePath("/")
-→ response: ActionResult<Note>
-  → ok: true → UI sets status "saved"
-  → ok: false, kind: "conflict" → UI sets status "conflict", shows non-blocking
+→ response: ActionResult<{ id, version }>
+  → ok: true → UI sets status "saved" and keeps the returned version for the next save
+  → ok: false, kind: "conflict" (ticket 04) → UI sets status "conflict", shows non-blocking
     "changed elsewhere, reload" banner, stops further autosaves until reload
 → UI: "Saving... / Saved" accessible live-region status updates throughout
 ```

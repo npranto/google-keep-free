@@ -126,9 +126,12 @@ atomic statement:
 ```sql
 UPDATE notes
 SET title = ?, body = ?, version = version + 1, updated_at = now()
-WHERE id = ? AND owner_id = ? AND version = ?
-RETURNING *;
+WHERE id = ? AND owner_id = ? AND version = ? AND state <> 'trashed'
+RETURNING id, version;
 ```
+
+A Trashed Note is read-only (`CONTEXT.md`), so the `state` predicate makes it match
+zero rows, the same as a missing Note.
 
 - If the row's current `version` doesn't match the one the client last read, zero
   rows are updated — Postgres itself is the referee; there is no separate locking
