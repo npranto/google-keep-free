@@ -67,3 +67,15 @@ tab B shows the conflict banner → click Reload → tab B shows tab A's content
 Touches the same `NoteEditorDialog.tsx` toolbar/status region as 03 and (later) 05
 — kept sequential rather than parallel with 05 for that reason, even though the two
 features are conceptually independent.
+
+## Decisions
+
+## Comments
+
+- 2026-10-30 (from the 03.01 review): `updateNote` returns `not_found` for every zero-row
+  case today, including a stale version, and the comment above it says all four cases answer
+  the same. This ticket adds `conflict` and must update that comment. Its follow-up `SELECT`
+  must apply the same `owner_id` and `state <> 'trashed'` predicates as the update, or a stale
+  write to a Trashed Note would report `conflict` instead of `not_found`, and a foreign id would
+  reveal that it exists. Consider one shared predicate helper for the update and the read.
+  `ActionError` extends by adding `{ kind: "conflict"; message }`, with no rework.

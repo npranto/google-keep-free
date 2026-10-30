@@ -167,7 +167,7 @@ timer) on blur, editor close, and `visibilitychange`.
 ## Optimistic concurrency
 
 Every note carries an integer `version` column. `updateNote` performs a single atomic
-`UPDATE ... WHERE id = ? AND ownerId = ? AND version = ? RETURNING *`; zero rows
+`UPDATE ... WHERE id = ? AND ownerId = ? AND version = ? AND state <> 'trashed' RETURNING id, version`; zero rows
 returned means a stale write, and a cheap follow-up read disambiguates "stale
 version" from "not found/not yours" to return an accurate `ActionResult` error kind.
 No pessimistic locking, no separate lock table — the `WHERE` clause is the entire

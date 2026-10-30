@@ -1,8 +1,20 @@
 # 03: Edit a Note with autosave
 
-**Status:** ready-for-agent
+**Status:** in-progress (umbrella; the work is in 03.01 to 03.03)
 **Classification:** SEQUENTIAL
-**Blocked by:** 02 (Create and persist a Note)
+**Blocked by:** 02 (Create and persist a Note), closed
+**Unblocks:** 04
+
+## Children
+
+Run in order. Each is its own PR and reaches production before the next starts.
+
+- [ ] 03.01 `updateNote` Server Action (Standard)
+- [ ] 03.02 `useAutosave` hook (Standard)
+- [ ] 03.03 Edit a Note in a dialog (Standard; blocked by 03.01 and 03.02)
+
+The umbrella is done when 03.01 to 03.03 are closed and the acceptance criteria below hold end
+to end. Decisions live in the children.
 
 ## What to build
 
@@ -13,8 +25,8 @@ button, with a "Saving…/Saved" status.
 
 `NoteEditorDialog` (centered `Dialog`, title/body fields, empty toolbar shell for
 now), `useAutosave` hook (1s debounce; flush on blur/close/`visibilitychange`;
-serialized — one save in flight, latest edit queued), `updateNote` Server Action
-(atomic `UPDATE ... WHERE id AND owner_id AND version`, success path only —
+serialized - one save in flight, latest edit queued), `updateNote` Server Action
+(atomic `UPDATE ... WHERE id AND owner_id AND version`, success path only -
 conflict handling is ticket 04), `aria-live="polite"` status region.
 
 ## Out of scope
@@ -24,14 +36,15 @@ buttons, read-only/Trashed variant.
 
 ## Acceptance criteria
 
-- [ ] Clicking a Note card opens the dialog with current title/body.
+- [ ] Clicking a Note card opens the dialog with current title/body: 03.03
 - [ ] Typing stops for 1s → autosave fires → status shows "Saving…" then "Saved"
-      (fades after ~2s).
+      (fades after ~2s): 03.02 (logic), 03.03 (status shown)
 - [ ] Blurring a field, closing the dialog, or hiding the tab flushes immediately
-      (bypassing the debounce).
+      (bypassing the debounce): 03.02 (logic), 03.03 (wired to the dialog)
 - [ ] Rapid typing produces exactly one in-flight save at a time; a newer edit made
-      mid-save is queued and sent right after.
-- [ ] Closing and reopening (or refreshing) shows the saved content.
+      mid-save is queued and sent right after: 03.02
+- [ ] Closing and reopening (or refreshing) shows the saved content: 03.01
+      (persistence), 03.03 (shown)
 
 ## Relevant spec sections
 
@@ -46,9 +59,9 @@ later.
 
 ## Testing expectations
 
-Unit: `useAutosave` debounce/serialization behavior (fake timers). Integration:
-`updateNote` persists and increments `version`/`updated_at`; rejects another
-owner's note id.
+Unit: `useAutosave` debounce/serialization behavior (fake timers): 03.02.
+Integration: `updateNote` persists and increments `version`/`updated_at`; rejects
+another owner's note id: 03.01. E2E: the demo path: 03.03.
 
 ## Demo instructions
 
@@ -64,4 +77,14 @@ Open a Note → edit title/body → watch status region → stop typing → conf
 ## Risks / conflict hotspots
 
 `NoteEditorDialog.tsx` becomes the second hottest shared file (toolbar fills in
-over 04, 05, 06, 07, 09, 10) — same sequential-chain reasoning as `NoteCard.tsx`.
+over 04, 05, 06, 07, 09, 10) - same sequential-chain reasoning as `NoteCard.tsx`.
+
+## Decisions
+
+## Comments
+
+- 2026-10-29: split into three at the user's choice (sizing failed tests 5, 6 and 7: a server
+  mutation, concurrency logic and a new dialog surface, about 700 to 800 lines). Considered a
+  2-leaf split (action; dialog plus hook) and keeping it whole. Found while sizing: cards carry
+  only a 500-character `preview`, so 03.03 must also decide how the dialog gets the full body.
+  The shadcn `Dialog` is not installed yet; it comes with 03.03.

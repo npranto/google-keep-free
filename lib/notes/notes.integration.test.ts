@@ -17,7 +17,7 @@ vi.mock("next/cache", () => ({ revalidatePath: revalidatePathMock }));
 import { db } from "@/lib/db";
 import { notes } from "@/lib/db/schema";
 
-import { createNote } from "./actions";
+import { createNote, updateNote } from "./actions";
 import { getActiveNotes } from "./queries";
 import { BODY_MAX, TITLE_MAX } from "./validation";
 
@@ -106,6 +106,259 @@ describe("createNote", () => {
     await createNote({ title: "", body: "" });
 
     expect(revalidatePathMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("updateNote", () => {
+  // Seeds with a fixed old timestamp so a bumped updated_at is unmistakable.
+  const seedNote = async (values: Partial<typeof notes.$inferInsert> = {}) => {
+    const [row] = await db
+      .insert(notes)
+      .values({
+        ownerId: testOwner,
+        title: "before",
+        body: "before body",
+        updatedAt: new Date("2026-01-01"),
+        ...values,
+      })
+      .returning();
+    return row;
+  };
+  const rowOf = async (id: string) =>
+    (await db.select().from(notes).where(eq(notes.id, id)))[0];
+
+  it("saves the title and body, bumps version and updated_at, and returns the new version", async () => {
+    const note = await seedNote();
+
+    const result = await updateNote({
+      id: note.id,
+      title: "after",
+      body: "after body",
+      version: note.version,
+    });
+
+    expect(result).toEqual({
+      ok: true,
+      data: { id: note.id, version: note.version + 1 },
+    });
+    const row = await rowOf(note.id);
+    expect(row).toMatchObject({
+      title: "after",
+      body: "after body",
+      version: note.version + 1,
+      ownerId: testOwner,
+    });
+    expect(row.updatedAt.getTime()).toBeGreaterThan(note.updatedAt.getTime());
+  });
+
+  it("changes nothing but title, body, version and updated_at", async () => {
+    const note = await seedNote({ pinned: true, color: "coral" });
+
+    await updateNote({
+      id: note.id,
+      title: "after",
+      body: "",
+      version: note.version,
+    });
+
+    expect(await rowOf(note.id)).toMatchObject({
+      state: "active",
+      pinned: true,
+      color: "coral",
+      createdAt: note.createdAt,
+      trashedAt: null,
+    });
+  });
+
+  it("applies two saves in a row when the second carries the returned version", async () => {
+    const note = await seedNote();
+
+    const first = await updateNote({
+      id: note.id,
+      title: "one",
+      body: "",
+      version: note.version,
+    });
+    if (!first.ok) throw new Error("expected the first save to succeed");
+    const second = await updateNote({
+      id: note.id,
+      title: "two",
+      body: "",
+      version: first.data.version,
+    });
+
+    expect(second).toEqual({
+      ok: true,
+      data: { id: note.id, version: note.version + 2 },
+    });
+    expect((await rowOf(note.id)).title).toBe("two");
+  });
+
+  it("rejects a stale version and leaves the Note as the newer save wrote it", async () => {
+    const note = await seedNote();
+    await updateNote({
+      id: note.id,
+      title: "newer",
+      body: "",
+      version: note.version,
+    });
+
+    const result = await updateNote({
+      id: note.id,
+      title: "stale",
+      body: "",
+      version: note.version,
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { kind: "not_found" } });
+    expect(await rowOf(note.id)).toMatchObject({
+      title: "newer",
+      version: note.version + 1,
+    });
+  });
+
+  it("lets only one of two saves with the same version win, and keeps the winner's text", async () => {
+    // Checks the outcome, not the interleaving: it holds whether the two calls
+    // overlap or run back to back. The single statement is what makes the
+    // check atomic, and "rejects a stale version" above guards the predicate.
+    const note = await seedNote();
+    const save = (title: string) =>
+      updateNote({ id: note.id, title, body: "", version: note.version });
+
+    const results = await Promise.all([save("a"), save("b")]);
+
+    const winners = results.flatMap((r, i) => (r.ok ? [["a", "b"][i]] : []));
+    expect(winners).toHaveLength(1);
+    expect(results.filter((r) => !r.ok)).toHaveLength(1);
+    expect(await rowOf(note.id)).toMatchObject({
+      title: winners[0],
+      version: note.version + 1,
+    });
+  });
+
+  it("rejects another Owner's Note with the same error as a missing id", async () => {
+    const theirs = await seedNote({ ownerId: otherOwner });
+
+    const foreign = await updateNote({
+      id: theirs.id,
+      title: "hijacked",
+      body: "",
+      version: theirs.version,
+    });
+    const missing = await updateNote({
+      id: randomUUID(),
+      title: "nothing",
+      body: "",
+      version: 1,
+    });
+
+    expect(foreign).toEqual(missing);
+    expect(foreign).toMatchObject({ ok: false, error: { kind: "not_found" } });
+    expect(await rowOf(theirs.id)).toMatchObject({
+      title: "before",
+      version: theirs.version,
+    });
+  });
+
+  it("ignores an ownerId in the input", async () => {
+    const theirs = await seedNote({ ownerId: otherOwner });
+
+    const result = await updateNote({
+      id: theirs.id,
+      title: "hijacked",
+      body: "",
+      version: theirs.version,
+      ownerId: otherOwner,
+    });
+
+    expect(result.ok).toBe(false);
+    expect((await rowOf(theirs.id)).title).toBe("before");
+  });
+
+  it("rejects a Trashed Note and leaves it unchanged", async () => {
+    const note = await seedNote({ state: "trashed", trashedAt: new Date() });
+
+    const result = await updateNote({
+      id: note.id,
+      title: "edited in the trash",
+      body: "",
+      version: note.version,
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { kind: "not_found" } });
+    expect(await rowOf(note.id)).toMatchObject({
+      title: "before",
+      version: note.version,
+    });
+  });
+
+  it("saves an Archived Note", async () => {
+    const note = await seedNote({ state: "archived" });
+
+    const result = await updateNote({
+      id: note.id,
+      title: "after",
+      body: "",
+      version: note.version,
+    });
+
+    expect(result.ok).toBe(true);
+    expect(await rowOf(note.id)).toMatchObject({
+      title: "after",
+      state: "archived",
+    });
+  });
+
+  it.each([
+    ["both fields empty", { title: "", body: "" }],
+    ["both fields whitespace", { title: " ", body: "\n" }],
+    ["a title over the limit", { title: "t".repeat(TITLE_MAX + 1), body: "x" }],
+    ["a body over the limit", { title: "x", body: "b".repeat(BODY_MAX + 1) }],
+    ["a NUL character", { title: "x", body: "a\u0000b" }],
+  ])("rejects %s and writes nothing", async (_name, fields) => {
+    const note = await seedNote();
+
+    const result = await updateNote({
+      id: note.id,
+      version: note.version,
+      ...fields,
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { kind: "validation" } });
+    expect(await rowOf(note.id)).toMatchObject({
+      title: "before",
+      body: "before body",
+      version: note.version,
+    });
+    expect(revalidatePathMock).not.toHaveBeenCalled();
+  });
+
+  it("accepts a title and a body of exactly the limits", async () => {
+    const note = await seedNote();
+
+    const result = await updateNote({
+      id: note.id,
+      title: "t".repeat(TITLE_MAX),
+      body: "b".repeat(BODY_MAX),
+      version: note.version,
+    });
+
+    expect(result.ok).toBe(true);
+  });
+
+  it("revalidates the notes list after a save, and not after a rejected one", async () => {
+    const note = await seedNote();
+
+    await updateNote({ id: note.id, title: "x", body: "", version: 99 });
+    expect(revalidatePathMock).not.toHaveBeenCalled();
+
+    await updateNote({
+      id: note.id,
+      title: "x",
+      body: "",
+      version: note.version,
+    });
+    expect(revalidatePathMock).toHaveBeenCalledWith("/");
   });
 });
 
