@@ -8,6 +8,21 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
 
+## 03.01 updateNote Server Action · Standard · branch feat/03.01-update-note-action
+
+**Mode:** step (`/ns-route`, then `/ns-flow-ticket`) · split from 03 into 03.01 to 03.03 on 2026-10-29
+
+- [x] split (03 into three leaves), branch, scope-check (three picks recorded in the ticket)
+- [x] implement (test-first: unit 54 to 86, integration 14 to 30)
+- [x] verify (local, manual) PARTIAL, 93: the four mutation checks are the author's report
+- [x] understand, review (Approve with nits; F1, F2, N1 fixed, N2 to N4 carried to 04, 03.02, 03.03)
+- [x] quality-check (15 of 15 stages)
+- [x] pr (#76, v0.2.46, CI green including `E2E (preview)` 26 of 26)
+- [x] release (merged `72f129e`, v0.2.46)
+- [x] verify (production) PARTIAL, 93: smoke E2E 19 of 19, `/` 307 to `/sign-in`; the `updateNote` criteria were proven on local only (no caller, no production test account)
+- [x] observe HEALTHY (0 errors in the first 48 requests; `updateNote` has had no traffic)
+- [x] close (CLOSED; follow-up `19.01` for the dependency advisories, to be filed)
+
 ## 02.04 Switch the package to ES modules · Standard · branch feat/02.04-package-type-module
 
 **Mode:** step (`/forge-route`, then `/forge-flow-ticket`)
