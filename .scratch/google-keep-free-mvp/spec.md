@@ -323,10 +323,12 @@ a reinterpretation:
   autosaves are suspended until "Reload" is clicked (which re-fetches the
   server version and discards local unsaved edits — no merge UI). Closing
   the dialog while conflicted discards local edits the same way.
-- **Status feedback**: `idle | saving | saved | conflict` states drive a
+- **Status feedback**: `idle | saving | saved | error | conflict` states drive a
   plain-text, `aria-live="polite"` status region in the editor toolbar:
-  "Saving..." while in flight, "Saved" for ~2s then fading to idle, or the
-  conflict banner described above.
+  "Saving..." while in flight, "Saved" for ~2s then fading to idle, an error
+  message when a save fails for any reason other than a conflict, or the
+  conflict banner described above. After an `error` nothing retries on its
+  own: the unsaved text is sent again by the next edit or flush.
 
 ## Authentication and authorization
 

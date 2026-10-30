@@ -162,7 +162,9 @@ Debounce (1s) and request-serialization (only one save in flight per note, lates
 edit queued and flushed next) live entirely in a client hook (`useAutosave`), not in
 the Server Action, which stays a plain "save this version of this note" call reusable
 by any future manual-save path. Flush is triggered directly (bypassing the debounce
-timer) on blur, editor close, and `visibilitychange`.
+timer) on blur, editor close, `visibilitychange`, and unmount. A save that fails
+(returned or thrown) sets the `error` status and leaves the text unsaved: the next
+edit or flush sends it again, and nothing retries on a timer.
 
 ## Optimistic concurrency
 
@@ -188,7 +190,7 @@ surfaced to the user as a generic "something went wrong" message.
 (pin/archive/trash/color) — instant UI feedback, automatic rollback on failure via
 re-render with server-confirmed state. `loading.tsx` (Next.js file convention) for
 route-level navigation loading between grid views. Autosave keeps its own dedicated
-`idle | saving | saved | conflict` status, since its UI ("Saving.../Saved" live
+`idle | saving | saved | error | conflict` status, since its UI ("Saving.../Saved" live
 region) doesn't fit the optimistic-toggle pattern.
 
 ## Caching / revalidation
