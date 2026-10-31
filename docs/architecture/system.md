@@ -100,7 +100,8 @@ holding a signature derived from the key (never the key itself), so changing the
 logs everyone out. Each page under it also checks access before rendering, because a
 page renders in parallel with its layout. The protection is surface-level: pages there
 hold demo text and fake data only. A new example is a new folder under
-`app/examples/` plus one line in its index page. These pages have no tests by choice.
+`app/examples/` plus one line in its index page. These pages have no UI tests by
+choice; the pure step logic of the `useAutosave` page (`cases.ts`) has unit tests.
 
 ## Server responsibilities
 
