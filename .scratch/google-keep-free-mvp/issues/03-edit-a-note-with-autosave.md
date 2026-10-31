@@ -10,7 +10,7 @@
 Run in order. Each is its own PR and reaches production before the next starts.
 
 - [x] 03.01 `updateNote` Server Action (Standard, PR #76, v0.2.46)
-- [ ] 03.02 `useAutosave` hook (Standard)
+- [x] 03.02 `useAutosave` hook (Standard, PR #78, v0.2.48; also shipped 03.02.01, the key-gated examples area)
 - [ ] 03.03 Edit a Note in a dialog (Standard; blocked by 03.01 and 03.02)
 
 The umbrella is done when 03.01 to 03.03 are closed and the acceptance criteria below hold end
