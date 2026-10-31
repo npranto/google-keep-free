@@ -92,6 +92,17 @@ current filter without needing near-duplicate page files. Search is not a route 
 it's a client-side debounced input whose results replace the grid in place, since
 search has no bookmarking/deep-link requirement.
 
+`/examples` is a separate, internal area for trying hooks and components by hand on
+any deployment (the `useAutosave` page is its first entry). It is closed (404) unless
+`EXAMPLES_ACCESS_KEY` is set. With the key set, `app/examples/layout.tsx` shows a key
+form until the visitor submits the right key, which sets an 8-hour httpOnly cookie
+holding a signature derived from the key (never the key itself), so changing the key
+logs everyone out. Each page under it also checks access before rendering, because a
+page renders in parallel with its layout. The protection is surface-level: pages there
+hold demo text and fake data only. A new example is a new folder under
+`app/examples/` plus one line in its index page. These pages have no UI tests by
+choice; the pure step logic of the `useAutosave` page (`cases.ts`) has unit tests.
+
 ## Server responsibilities
 
 - Resolve the authenticated owner from the Clerk session (`getOwnerId()`), never
@@ -162,7 +173,9 @@ Debounce (1s) and request-serialization (only one save in flight per note, lates
 edit queued and flushed next) live entirely in a client hook (`useAutosave`), not in
 the Server Action, which stays a plain "save this version of this note" call reusable
 by any future manual-save path. Flush is triggered directly (bypassing the debounce
-timer) on blur, editor close, and `visibilitychange`.
+timer) on blur, editor close, `visibilitychange`, and unmount. A save that fails
+(returned or thrown) sets the `error` status and leaves the text unsaved: the next
+edit or flush sends it again, and nothing retries on a timer.
 
 ## Optimistic concurrency
 
@@ -188,7 +201,7 @@ surfaced to the user as a generic "something went wrong" message.
 (pin/archive/trash/color) — instant UI feedback, automatic rollback on failure via
 re-render with server-confirmed state. `loading.tsx` (Next.js file convention) for
 route-level navigation loading between grid views. Autosave keeps its own dedicated
-`idle | saving | saved | conflict` status, since its UI ("Saving.../Saved" live
+`idle | saving | saved | error | conflict` status, since its UI ("Saving.../Saved" live
 region) doesn't fit the optimistic-toggle pattern.
 
 ## Caching / revalidation
@@ -216,7 +229,8 @@ paging — not needed for a solo daily-use tool.
 
 ## Environment configuration
 
-A single Zod-validated `lib/env.ts` module (`DATABASE_URL`, Clerk keys, etc.),
+A single Zod-validated `lib/env.ts` module (`DATABASE_URL`, Clerk keys, the optional
+`EXAMPLES_ACCESS_KEY`, etc.),
 parsed once at import time so a missing/malformed variable fails loudly at
 build/boot rather than silently mid-request. No direct `process.env.X` access
 elsewhere in the codebase. `.env.example` checked into git as the canonical list of
