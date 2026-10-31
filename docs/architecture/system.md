@@ -92,6 +92,16 @@ current filter without needing near-duplicate page files. Search is not a route 
 it's a client-side debounced input whose results replace the grid in place, since
 search has no bookmarking/deep-link requirement.
 
+`/examples` is a separate, internal area for trying hooks and components by hand on
+any deployment (the `useAutosave` page is its first entry). It is closed (404) unless
+`EXAMPLES_ACCESS_KEY` is set. With the key set, `app/examples/layout.tsx` shows a key
+form until the visitor submits the right key, which sets an 8-hour httpOnly cookie
+holding a signature derived from the key (never the key itself), so changing the key
+logs everyone out. Each page under it also checks access before rendering, because a
+page renders in parallel with its layout. The protection is surface-level: pages there
+hold demo text and fake data only. A new example is a new folder under
+`app/examples/` plus one line in its index page. These pages have no tests by choice.
+
 ## Server responsibilities
 
 - Resolve the authenticated owner from the Clerk session (`getOwnerId()`), never
@@ -218,7 +228,8 @@ paging — not needed for a solo daily-use tool.
 
 ## Environment configuration
 
-A single Zod-validated `lib/env.ts` module (`DATABASE_URL`, Clerk keys, etc.),
+A single Zod-validated `lib/env.ts` module (`DATABASE_URL`, Clerk keys, the optional
+`EXAMPLES_ACCESS_KEY`, etc.),
 parsed once at import time so a missing/malformed variable fails loudly at
 build/boot rather than silently mid-request. No direct `process.env.X` access
 elsewhere in the codebase. `.env.example` checked into git as the canonical list of

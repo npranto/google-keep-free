@@ -9,6 +9,13 @@ export const envSchema = z.object({
   }),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1, "is required"),
   CLERK_SECRET_KEY: z.string().min(1, "is required"),
+  // Optional. The key that opens the internal /examples pages. Unset (or empty)
+  // keeps those pages closed, so they answer 404. Long enough that guessing it
+  // is hopeless. Change it any time: every open session stops working.
+  EXAMPLES_ACCESS_KEY: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().min(24, "must be at least 24 characters").optional(),
+  ),
 });
 
 export type Env = z.infer<typeof envSchema>;
