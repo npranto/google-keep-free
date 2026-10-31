@@ -11,7 +11,7 @@ const EXAMPLES = [
     href: "/examples/use-autosave",
     title: "useAutosave hook",
     description:
-      "A live note editor wired to the real hook with a fake server you can slow down or make fail, plus test cases with steps and expected results.",
+      "A checklist of cases, each with its own note editor wired to the real hook and a fake server. Steps tick by themselves, and a case passes when all are done.",
   },
 ];
 
@@ -23,7 +23,7 @@ export default async function ExamplesIndexPage() {
       <h1 className="text-2xl font-semibold">Examples</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         Pages for trying hooks, components and flows by hand, on any deployment.
-        Each one lists what to do and what you should see.
+        Each one lists what to do and checks for you that it worked.
       </p>
       <ul className="mt-6 space-y-3">
         {EXAMPLES.map((example) => (
