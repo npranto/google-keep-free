@@ -8,6 +8,20 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
 
+## 03.02 useAutosave hook, and 03.02.01 the key-gated examples area · Standard · branch feat/03.02-use-autosave-hook
+
+**Mode:** step (`/ns-route`, then `/ns-flow-ticket`) · one PR (#78) shipped both tickets
+
+- [x] branch, scope-check (two picks in the ticket), implement (test-first, hook tests 19)
+- [x] verify (local) VERIFIED, 95: the hook alone, jsdom for tab hide
+- [x] understand, review (hook: 2 should fix, 3 nits, all handled), quality-check (12 of 15 stages, 3 not applicable)
+- [x] 03.02.01 added to the branch after those phases (`5a40d1f`, rebuilt in `52d7c81`): ticketed after the fact, evidence page 91, RELEASE WITH CARE
+- [x] pr (#78, v0.2.48, CI green including `E2E (preview)`)
+- [x] release (squash-merged `3466624`, v0.2.48)
+- [x] verify (production) PARTIAL, 90, RELEASE WITH CARE: smoke E2E 19 of 19, `/examples` 404 as designed, signed-in and gate criteria not run on production (no key, no test account); case 5 (real tab switch) unproven
+- [x] observe HEALTHY (medium tier: 50 requests, 0 errors, 0 5xx; two unexplained Clerk-proxy 400s not from this change; no pre-deploy baseline)
+- [x] close (CLOSED; accepted risks and three deferred follow-ups, not yet filed as tickets, are listed in the closing entry of `✅03.02.01-examples-area-and-useautosave-page.md`; next is 03.03)
+
 ## 03.01 updateNote Server Action · Standard · branch feat/03.01-update-note-action
 
 **Mode:** step (`/ns-route`, then `/ns-flow-ticket`) · split from 03 into 03.01 to 03.03 on 2026-10-29
