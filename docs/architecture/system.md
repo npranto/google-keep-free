@@ -14,9 +14,14 @@ rather than by a network boundary:
 
 - **Reads**: Server Components query Postgres directly via Drizzle during render.
 - **Writes**: Server Actions, one per operation, invoked from Client Components.
-- **No `/api/*` route handlers**, with one narrow future exception: a Vercel Cron
-  endpoint for trash auto-purge, if/when that's built (Cron jobs call a URL, not a
-  Server Action). Not part of MVP.
+- **`/api/*` route handlers only where a Server Action does not fit**, and there are
+  two. `GET /api/notes/[id]` returns one Note in full (title, body, version) when the
+  editor opens: a grid card carries only a 500-character preview, the read depends on
+  a click so no Server Component can render it ahead of time, and Server Actions run
+  one at a time on the client, so a read through one would wait behind a save still on
+  its way. The other is a future Vercel Cron endpoint for trash auto-purge, if/when
+  that's built (Cron jobs call a URL, not a Server Action). Not part of MVP. Every
+  route handler reads the Owner from the session (`getOwnerId()`), as an action does.
 
 There is no client-side data-fetching library (no React Query/SWR) and no global
 client state store (no Redux/Zustand) — Server Components own all read state, and
@@ -41,7 +46,8 @@ lib/
     index.ts             # Drizzle client + Neon connection
     migrations/           # generated SQL migrations, checked into git
   notes/
-    queries.ts             # getActiveNotes, getArchivedNotes, getTrashedNotes, getNotesForLabel
+    queries.ts             # getActiveNotes, getArchivedNotes, getTrashedNotes, getNotesForLabel,
+                            # getOwnedNote (one Note in full, read by GET /api/notes/[id])
     actions.ts               # createNote, updateNote, pinNote, archiveNote, trashNote,
                               # restoreNote, permanentlyDeleteNote
     card.ts                     # toNoteCard(): row -> card shape, capped preview, no body or owner id
@@ -156,7 +162,9 @@ Named query functions per view (`getActiveNotes()`, `getArchivedNotes()`,
 so no caller passes an Owner id, and the final `id` breaks ties so Notes with equal
 timestamps keep one order. Search uses its own query (`searchNotes()`,
 `ILIKE` on title/body across Active+Archived) since it has a genuinely different
-filter shape.
+filter shape. `getOwnedNote(id)` is the one read that is not a list view: it filters
+on `getOwnerId()` itself, and answers a missing id, another Owner's Note and a
+malformed id the same way (`undefined`).
 
 ## Mutation architecture
 
