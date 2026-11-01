@@ -11,7 +11,7 @@ Run in order. Each is its own PR and reaches production before the next starts.
 
 - [x] 03.01 `updateNote` Server Action (Standard, PR #76, v0.2.46)
 - [x] 03.02 `useAutosave` hook (Standard, PR #78, v0.2.48; also shipped 03.02.01, the key-gated examples area)
-- [ ] 03.03 Edit a Note in a dialog (Standard; blocked by 03.01 and 03.02)
+- [ ] 03.03 Edit a Note in a dialog (umbrella, split on 2026-10-31 into 03.03.01 the full-Note read and 03.03.02 the dialog)
 
 The umbrella is done when 03.01 to 03.03 are closed and the acceptance criteria below hold end
 to end. Decisions live in the children.
@@ -88,3 +88,5 @@ over 04, 05, 06, 07, 09, 10) - same sequential-chain reasoning as `NoteCard.tsx`
   2-leaf split (action; dialog plus hook) and keeping it whole. Found while sizing: cards carry
   only a 500-character `preview`, so 03.03 must also decide how the dialog gets the full body.
   The shadcn `Dialog` is not installed yet; it comes with 03.03.
+- 2026-10-31: 03.03 was split again, into 03.03.01 (the Owner-scoped read of a whole Note, with its
+  `version`) and 03.03.02 (the dialog). The full-body question moved to 03.03.01.

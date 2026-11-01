@@ -52,6 +52,22 @@ UI: owner clicks "New note", starts typing title/body
 → UI: new note appears in the grid (optimistic insert via useOptimistic, confirmed on response)
 ```
 
+## Open a note in the editor
+
+```
+UI: owner clicks a Note card in the grid
+→ components/notes/NoteEditorDialog.tsx (03.03.02) opens and fetches GET /api/notes/<id>
+  (a card carries only a 500-character preview and no version, so the editor reads the Note itself)
+→ app/api/notes/[id]/route.ts: GET(request, { params })
+  → lib/notes/queries.ts: getOwnedNote(id)
+    → getOwnerId()
+    → an id that is not a uuid → undefined, with no query
+    → database: SELECT * FROM notes WHERE owner_id=? AND id=?   (any state)
+→ response: 200 { id, title, body, version }, or 404 { error: "not_found" } for a missing id,
+  another Owner's Note and a malformed id alike; Cache-Control: private, no-store
+→ UI: title and body fields show the full text; the dialog keeps `version` for autosave
+```
+
 ## Autosave note (edit title/body)
 
 ```
