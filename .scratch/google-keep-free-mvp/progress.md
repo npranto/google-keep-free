@@ -8,6 +8,20 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
 
+## 03.03.01 Load the full Note for editing · Standard · branch feat/03.03.01-load-full-note
+
+**Mode:** step (`/ns-route`, then `/ns-flow-ticket`) · split from 03.03 into 03.03.01 and 03.03.02 on 2026-10-31
+
+- [x] split (03.03 into the read and the dialog), branch, scope-check (route, any state; both in the ticket)
+- [x] implement (test-first: integration 30 to 38)
+- [x] verify (local, automatic hidden) VERIFIED, 98: real requests to the built app, 2 mutation checks
+- [x] understand, review (request changes, then resolved: the route contradicted `system.md`; the owner kept the route and the docs were amended), quality-check (15 of 15 stages, 1 not applicable)
+- [x] pr (#80, v0.2.50, CI green including `E2E (preview)` 26 of 26)
+- [x] release (squash-merged `a3ed93f`, v0.2.50)
+- [x] verify (production) PARTIAL, 95: smoke E2E 19 of 19, signed-out route 307; criteria 1 and 2 proven on preview only (no key, no test account)
+- [x] observe HEALTHY (low tier: 43 requests, 0 errors, 0 5xx; the owner skipped the browser-console check; 4 unexplained `/__clerk` 400s, a repeat from 03.02)
+- [x] close (CLOSED; the `/__clerk` 400s and integration tests in CI are noted in the closing entry of `✅03.03.01-load-full-note-for-editing.md`, not ticketed; next is 03.03.02)
+
 ## 03.02 useAutosave hook, and 03.02.01 the key-gated examples area · Standard · branch feat/03.02-use-autosave-hook
 
 **Mode:** step (`/ns-route`, then `/ns-flow-ticket`) · one PR (#78) shipped both tickets
