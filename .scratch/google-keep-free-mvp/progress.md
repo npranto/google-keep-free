@@ -8,6 +8,16 @@ tickets  ✅ 02.01 ─ ✅ 02.02.01 ─ ✅ 02.02.02 ─ ✅ 02.02.03 ─ ✅ 02
 (discover, grill, architect, design, spec, tickets) were already done, so `/ns-flow-feature`
 went straight to the ticket loop.
 
+## 03.03.02 Edit a Note in a dialog · Standard · branch cursor/note-editor-dialog-8991
+
+**Mode:** step · written by a cloud agent without Clerk or database credentials, so the real-stack proof is CI
+
+- [x] branch, scope-check (no `axe-core` in the repo: accessible names and the live region asserted in the E2E, axe run by hand; decisions recorded in the ticket)
+- [x] implement (`NoteEditorDialog.tsx`, `components/ui/dialog.tsx`, `NoteCard.tsx` opener; 18 unit tests, 7 E2E)
+- [x] verify (local) typecheck, lint, format, unit 131 of 131, `next build`; browser run on a mocked page (axe 0, focus trap and return); local E2E and integration not run (no credentials)
+- [x] pr (#82, v0.2.52, CI green including `E2E (preview)` 33 of 33; the first two pushes failed it on test-side problems, fixed in `7b5de9f..69079ba`)
+- [ ] release, verify (production), observe, close (after the merge, as for 03.03.01)
+
 ## 03.03.01 Load the full Note for editing · Standard · branch feat/03.03.01-load-full-note
 
 **Mode:** step (`/ns-route`, then `/ns-flow-ticket`) · split from 03.03 into 03.03.01 and 03.03.02 on 2026-10-31
