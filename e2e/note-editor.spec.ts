@@ -9,6 +9,10 @@ import { signInAsOwner } from "./sign-in";
 
 const card = (page: Page, title: string) =>
   page.getByRole("article").filter({ hasText: title });
+// While the dialog is open the rest of the page is aria-hidden, so a role query
+// cannot see the grid behind it; this finds a card by its element instead.
+const cardBehindDialog = (page: Page, title: string) =>
+  page.locator("article").filter({ hasText: title });
 const openButton = (page: Page, title: string) =>
   page.getByRole("button", { name: `Open note: ${title}`, exact: true });
 const editor = (page: Page) => page.getByRole("dialog", { name: "Edit note" });
@@ -57,7 +61,7 @@ test.describe("note editor dialog", () => {
     await expect(saveStatus(page)).toHaveText("", { timeout: 4000 });
 
     // The grid card shows the edit without a reload.
-    await expect(card(page, edited)).toContainText(
+    await expect(cardBehindDialog(page, edited)).toContainText(
       "second draft, typed in the dialog",
     );
 
@@ -131,7 +135,7 @@ test.describe("note editor dialog", () => {
     // typing pause, so this appears well inside that second.
     await expect(saveStatus(page)).toHaveText("Saving…", { timeout: 500 });
     await expect(saveStatus(page)).toHaveText("Saved");
-    await expect(card(page, edited)).toBeVisible();
+    await expect(cardBehindDialog(page, edited)).toBeVisible();
   });
 
   test("traps focus, closes on Escape and returns focus to the card", async ({
