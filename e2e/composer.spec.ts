@@ -45,7 +45,7 @@ test.describe("composer", () => {
     await collapsedField(page).click();
     await titleField(page).fill(title);
     await bodyField(page).fill("Written by the E2E suite");
-    await page.getByRole("button", { name: "Close" }).click();
+    await page.getByRole("button", { name: "Close", exact: true }).click();
 
     const card = page.getByRole("article").filter({ hasText: title });
     await expect(card).toBeVisible();
@@ -94,12 +94,12 @@ test.describe("composer", () => {
     const actionCalls = watchServerActions(page);
 
     await collapsedField(page).click();
-    await page.getByRole("button", { name: "Close" }).click();
+    await page.getByRole("button", { name: "Close", exact: true }).click();
     await expect(titleField(page)).toHaveCount(0);
 
     await collapsedField(page).click();
     await titleField(page).fill("   ");
-    await page.getByRole("button", { name: "Close" }).click();
+    await page.getByRole("button", { name: "Close", exact: true }).click();
     await expect(titleField(page)).toHaveCount(0);
 
     await expect(cards).toHaveCount(before);
@@ -129,7 +129,7 @@ test.describe("composer", () => {
     await collapsedField(page).click();
     await titleField(page).fill(title);
     await bodyField(page).fill("Must survive a failed save");
-    await page.getByRole("button", { name: "Close" }).click();
+    await page.getByRole("button", { name: "Close", exact: true }).click();
 
     // Next's route announcer is also a role="alert", so match on the text.
     await expect(

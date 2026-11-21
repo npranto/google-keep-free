@@ -21,7 +21,7 @@ async function createNote(page: Page, title: string, body: string) {
   await page.getByRole("textbox", { name: "Take a note", exact: true }).click();
   await page.getByLabel("Title", { exact: true }).fill(title);
   await page.getByLabel("Note", { exact: true }).fill(body);
-  await page.getByRole("button", { name: "Close" }).click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
   await expect(card(page, title)).toBeVisible();
 }
 
@@ -175,7 +175,7 @@ test.describe("note editor dialog", () => {
       "Your changes are saved automatically.",
     );
     await expect(
-      editor(page).getByRole("button", { name: "Close" }),
+      editor(page).getByRole("button", { name: "Close", exact: true }),
     ).toBeVisible();
     await expect(saveStatus(page)).toHaveAttribute("aria-live", "polite");
   });
