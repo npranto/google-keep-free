@@ -84,3 +84,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* The editor's "Saved" status: fully visible for most of its 2 seconds, then
+   fades out just before the autosave hook clears it. */
+@keyframes saved-fade {
+  0%,
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

@@ -303,6 +303,18 @@ illustration artwork), reused with per-view copy:
   icon.
 - This element is `aria-live="polite"` - it is the accessible status live
   region called for in `CONTEXT.md`, not a separate hidden one.
+- **Error state** (`useAutosave` reports `error`; shipped in 03.03.02): the same
+  region shows the `AlertCircle` icon and, in `destructive` text, "A note needs a
+  title or a body" when both fields are empty (an empty Note is rejected by
+  design), otherwise "Could not save. Your changes are kept here." The raw
+  message of a validation error is never shown, because it comes from zod and not
+  from the dialog. The text stays unsaved and nothing retries on a timer: the next
+  edit or flush sends it again.
+- **Loading and read failure** (shipped in 03.03.02): the dialog opens at once
+  with "Loading note..." and fills in when `GET /api/notes/<id>` answers. A 404,
+  any non-JSON answer (a signed-out call is redirected to HTML) or a failed
+  request shows "Could not open this note. Close this window and try again." in
+  place of the fields, and nothing is saved.
 - **Conflict state** (`updateNote` returns a version conflict): the status
   text is replaced by a persistent inline warning banner (`warning` semantic
   token) above the toolbar: "This note changed elsewhere. Reload to see the

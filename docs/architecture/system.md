@@ -76,7 +76,7 @@ app/
   sign-in/[[...sign-in]]/page.tsx
   sign-up/[[...sign-up]]/page.tsx
 components/
-  notes/                                               # NoteCard, NoteGrid, NoteEditor, SearchInput,
+  notes/                                               # NoteCard, NoteGrid, NoteEditorDialog, SearchInput,
                                                           # use-autosave.ts
   labels/                                                # label sidebar, edit-labels dialog
   ui/                                                     # shadcn/ui primitives
